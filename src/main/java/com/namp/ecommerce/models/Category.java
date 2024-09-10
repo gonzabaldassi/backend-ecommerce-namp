@@ -21,7 +21,7 @@ public class Category implements Serializable {
     @Id
     @Column(name = "idCategory")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long idCategory;
 
     @NotEmpty(message = "El nombre no debe estar vacio")
     @Pattern(regexp = "^(?!\s*$)[a-zA-Z\s]+$",message = "El nombre debe contener solo caracteres alfabeticos")

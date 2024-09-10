@@ -19,7 +19,7 @@ public class Subcategory implements Serializable {
     @Id
     @Column(name = "idSubcategory")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long idSubcategory;
 
     @NotNull(message = "El nombre no puede estar vacio")
     private String name;
