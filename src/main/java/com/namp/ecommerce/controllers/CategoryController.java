@@ -14,7 +14,6 @@ public class CategoryController {
     @Autowired
     private ICategoryService categoryService;
 
-
     @PostMapping("category")
     public ResponseEntity<?> createCategory(@Valid @RequestBody Category category) {
         try{
@@ -37,6 +36,23 @@ public class CategoryController {
             return ResponseEntity.ok(categoryService.getCategories());
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+        }
+    }
+
+    @DeleteMapping("category/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable long id){
+        try{
+            Category category = categoryService.findById(id);
+
+            if (category == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La categoría no existe");
+            }
+
+            categoryService.delete(category);
+
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la categoria: " + e.getMessage());
         }
     }
 }

@@ -44,4 +44,9 @@ public class CategoryImplementation implements ICategoryService {
     public void delete(Category category) {
         categoryDAO.delete(category);
     }
+
+    @Override
+    public Category findById(long id) {
+        return categoryDAO.findByIdCategory(id);
+    }
 }
