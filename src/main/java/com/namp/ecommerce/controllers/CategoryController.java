@@ -1,0 +1,42 @@
+package com.namp.ecommerce.controllers;
+
+import com.namp.ecommerce.models.Category;
+import com.namp.ecommerce.services.ICategoryService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api-namp")
+public class CategoryController {
+    @Autowired
+    private ICategoryService categoryService;
+
+
+    @PostMapping("category")
+    public ResponseEntity<?> createCategory(@Valid @RequestBody Category category) {
+        try{
+            Category createdCategory = categoryService.save(category);
+
+            if (createdCategory == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Esta categoria ya se encuentra registrada");
+            }
+
+            return ResponseEntity.ok(createdCategory);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la categoria:"+e.getMessage());
+        }
+    }
+
+    @GetMapping("category")
+    public ResponseEntity<?> getCategories(){
+        try{
+            return ResponseEntity.ok(categoryService.getCategories());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+        }
+    }
+}
