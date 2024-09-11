@@ -55,4 +55,26 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la categoria: " + e.getMessage());
         }
     }
+
+
+    @PutMapping("category/{id}")
+    public ResponseEntity<?> updateCategory(@PathVariable long id, @Valid @RequestBody Category category){
+        try{
+            Category existingCategory = categoryService.findById(id);
+
+            if (existingCategory == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La categoria no existe");
+            }
+
+            Category updatedCategory = categoryService.update(existingCategory, category);
+
+            if (updatedCategory == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre ingresado ya existe");
+            }
+
+            return ResponseEntity.ok(updatedCategory);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la categoria: " + e.getMessage());
+        }
+    }
 }

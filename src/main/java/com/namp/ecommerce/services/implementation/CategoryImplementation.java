@@ -3,6 +3,7 @@ package com.namp.ecommerce.services.implementation;
 import com.namp.ecommerce.models.Category;
 import com.namp.ecommerce.repositories.ICategoryDAO;
 import com.namp.ecommerce.services.ICategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,6 @@ public class CategoryImplementation implements ICategoryService {
         Category existingCategory = categoryDAO.findByName(normalizedName);
 
         if(existingCategory == null) {
-
             category.setName(normalizedName);
 
             return categoryDAO.save(category);
@@ -36,8 +36,20 @@ public class CategoryImplementation implements ICategoryService {
     }
 
     @Override
-    public Category update(Category category) {
-        return null;
+    public Category update(Category existingCategory,  Category category) {
+        // Normalizar los espacios en blanco y convertir a mayúsculas
+        String normalizedName = category.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+
+        Category repeatedCategory = categoryDAO.findByName(normalizedName);
+
+        if(repeatedCategory != null) {
+            return null;
+        }
+
+        existingCategory.setName(normalizedName);
+        existingCategory.setDescription(category.getDescription());
+
+        return categoryDAO.save(existingCategory);
     }
 
     @Override
