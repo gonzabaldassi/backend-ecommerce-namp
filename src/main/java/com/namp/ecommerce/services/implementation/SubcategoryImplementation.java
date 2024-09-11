@@ -25,9 +25,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = subcategory.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
-        Subcategory existingSubcategory = subcategoryDAO.findByName(normalizedName);
-
-        if(existingSubcategory == null) {
+        if(!verifyName(normalizedName)) {
             subcategory.setName(normalizedName);
 
             return subcategoryDAO.save(subcategory);
@@ -44,7 +42,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         Subcategory repeatedCategory = subcategoryDAO.findByName(normalizedName);
 
         // Esta en la base de datos == SI
-        if(repeatedCategory != null) {
+        if(verifyName(normalizedName)) {
             return null;
         }
 
@@ -63,5 +61,20 @@ public class SubcategoryImplementation implements ISubcategoryService {
 
     public Subcategory findById(long id) {
         return subcategoryDAO.findByIdSubcategory(id);
+    }
+
+    @Override
+    public boolean verifyName(String normalizedName){
+        List<Subcategory> subcategories = subcategoryDAO.findAll();
+        String name = normalizedName.replaceAll("\\s+", "");
+
+        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        for(Subcategory subcategory : subcategories){
+            if(name.equals(subcategory.getName().replaceAll("\\s+", ""))){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
