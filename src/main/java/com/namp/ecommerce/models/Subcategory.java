@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,8 +27,13 @@ public class Subcategory implements Serializable {
     @NotNull(message = "La descripcion no puede estar vacia")
     private String description;
 
+    @OneToMany(mappedBy = "idSubcategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
+
     @NotNull(message = "La categoria no puede estar vacia")
     @ManyToOne
     @JoinColumn(name = "fk_category", referencedColumnName = "idCategory")
     private Category idCategory;
+
+
 }
