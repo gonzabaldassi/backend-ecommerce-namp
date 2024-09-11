@@ -1,6 +1,5 @@
 package com.namp.ecommerce.services.implementation;
 
-import com.namp.ecommerce.models.Category;
 import com.namp.ecommerce.models.Subcategory;
 import com.namp.ecommerce.repositories.ISubcategoryDAO;
 import com.namp.ecommerce.services.ISubcategoryService;
@@ -16,7 +15,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
     private ISubcategoryDAO subcategoryDAO;
 
     @Override
-    public List<Subcategory> getSubcategory() {
+    public List<Subcategory> getSubcategories() {
         return subcategoryDAO.findAll();
     }
 
@@ -39,7 +38,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         String normalizedName = subcategory.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
         // Verifica si el nombre esta repetido en la base de datos
-        Subcategory repeatedCategory = subcategoryDAO.findByName(normalizedName);
+        //Subcategory repeatedCategory = subcategoryDAO.findByName(normalizedName);
 
         // Esta en la base de datos == SI
         if(verifyName(normalizedName)) {

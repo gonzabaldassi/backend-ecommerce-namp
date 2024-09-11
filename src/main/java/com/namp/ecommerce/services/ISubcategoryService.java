@@ -7,7 +7,7 @@ import com.namp.ecommerce.models.Subcategory;
 import java.util.List;
 
 public interface ISubcategoryService {
-    List<Subcategory> getSubcategory();
+    List<Subcategory> getSubcategories();
     Subcategory save(Subcategory subcategory);
     Subcategory update(Subcategory existingSubcategory, Subcategory subcategory);
     void delete(Subcategory subcategory);

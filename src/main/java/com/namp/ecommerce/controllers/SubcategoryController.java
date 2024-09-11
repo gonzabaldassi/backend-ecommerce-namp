@@ -1,6 +1,5 @@
 package com.namp.ecommerce.controllers;
 
-import com.namp.ecommerce.models.Category;
 import com.namp.ecommerce.models.Subcategory;
 import com.namp.ecommerce.services.ISubcategoryService;
 import jakarta.validation.Valid;
@@ -17,9 +16,9 @@ public class SubcategoryController {
     private ISubcategoryService subcategoryService;
 
     @GetMapping("subcategory")
-    public ResponseEntity<?> getSubcategory(){
+    public ResponseEntity<?> getSubcategories(){
         try{
-            return ResponseEntity.ok(subcategoryService.getSubcategory());
+            return ResponseEntity.ok(subcategoryService.getSubcategories());
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
         }
