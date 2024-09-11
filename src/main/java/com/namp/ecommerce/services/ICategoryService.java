@@ -10,4 +10,5 @@ public interface ICategoryService {
     Category update(Category existingCategory, Category category);
     void delete(Category category);
     Category findById(long id);
+    boolean verifyName(String normalizedName);
 }

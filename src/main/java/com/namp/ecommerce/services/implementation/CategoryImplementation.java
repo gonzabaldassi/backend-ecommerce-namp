@@ -3,15 +3,12 @@ package com.namp.ecommerce.services.implementation;
 import com.namp.ecommerce.models.Category;
 import com.namp.ecommerce.repositories.ICategoryDAO;
 import com.namp.ecommerce.services.ICategoryService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class CategoryImplementation implements ICategoryService {
-
     @Autowired
     private ICategoryDAO categoryDAO;
 
@@ -25,9 +22,7 @@ public class CategoryImplementation implements ICategoryService {
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = category.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
-        Category existingCategory = categoryDAO.findByName(normalizedName);
-
-        if(existingCategory == null) {
+        if(!verifyName(normalizedName)) {
             category.setName(normalizedName);
 
             return categoryDAO.save(category);
@@ -40,9 +35,7 @@ public class CategoryImplementation implements ICategoryService {
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = category.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
-        Category repeatedCategory = categoryDAO.findByName(normalizedName);
-
-        if(repeatedCategory != null) {
+        if(verifyName(normalizedName)) {
             return null;
         }
 
@@ -60,5 +53,20 @@ public class CategoryImplementation implements ICategoryService {
     @Override
     public Category findById(long id) {
         return categoryDAO.findByIdCategory(id);
+    }
+
+    @Override
+    public boolean verifyName(String normalizedName){
+        List<Category> categories = categoryDAO.findAll();
+        String name = normalizedName.replaceAll("\\s+", "");
+
+        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        for(Category category : categories){
+            if(name.equals(category.getName().replaceAll("\\s+", ""))){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
