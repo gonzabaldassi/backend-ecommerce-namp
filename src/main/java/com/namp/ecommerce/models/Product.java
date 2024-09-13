@@ -46,4 +46,6 @@ public class Product implements Serializable{
     @JsonIgnore
     @JoinColumn(name = "fk_subcategory", referencedColumnName = "idSubcategory")
     private Subcategory idSubcategory;
+
+    
 }

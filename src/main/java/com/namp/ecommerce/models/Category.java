@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,4 +29,8 @@ public class Category implements Serializable {
 
     @NotNull(message = "La descripcion no debe estar vacia")
     private String description;
+
+    
+    @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Subcategory> subCategories;
 }
