@@ -34,6 +34,7 @@ public class ProductImplementation implements IProductService{
         // Creo json a objeto
         ObjectMapper objectMapper = new ObjectMapper();
         Product product = objectMapper.readValue(productJson, Product.class);
+        Path filePath = null;
 
         if (!file.isEmpty()){
             String contentType = file.getContentType();
@@ -47,10 +48,8 @@ public class ProductImplementation implements IProductService{
             // Path donde se guardan las imagenes
             String uploadDir = "src/main/resources/images/";
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
-            Path filePath = Paths.get(uploadDir, fileName);
+            filePath = Paths.get(uploadDir, fileName);
 
-            // Guardo la imagen (si un archivo se llama igual en el path lo va a reemplazar)
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Seteo ruta al atributo img de product
             product.setImg("/images/" + fileName);
@@ -60,6 +59,10 @@ public class ProductImplementation implements IProductService{
 
         if(!verifyName(normalizedName)) {
             product.setName(normalizedName);
+
+            // Guardo la imagen (si un archivo se llama igual en el path lo va a reemplazar)
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
             return productDAO.save(product);
         }
         return null;
