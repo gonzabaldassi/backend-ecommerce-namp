@@ -9,6 +9,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Data
@@ -29,6 +33,10 @@ public class Category implements Serializable {
 
     @NotNull(message = "La descripcion no debe estar vacia")
     private String description;
+
+    @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Subcategory> subcategories = new ArrayList<>();
 
 
 }

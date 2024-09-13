@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,6 +44,7 @@ public class Product implements Serializable{
     @NotNull
     @ManyToOne
     @JoinColumn(name = "fk_subcategory", referencedColumnName = "idSubcategory")
+    @JsonBackReference
     private Subcategory idSubcategory;
 
     
