@@ -70,7 +70,7 @@ public class ProductImplementation implements IProductService{
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = product.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
-        if(verifyName(normalizedName)) {
+        if(verifyName(normalizedName, existingProduct.getIdProduct())) {
             return null;
         }
 
@@ -101,6 +101,21 @@ public class ProductImplementation implements IProductService{
         //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
         for(Product product : products){
             if(name.equals(product.getName().replaceAll("\\s+", ""))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean verifyName(String normalizedName, long idProduct) {
+        List<Product> products = productDAO.findAll();
+        String name = normalizedName.replaceAll("\\s+", "");
+
+        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        for(Product product : products){
+            if(product.getIdProduct()!=idProduct && name.equals(product.getName().replaceAll("\\s+", ""))){
                 return true;
             }
         }

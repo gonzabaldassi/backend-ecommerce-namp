@@ -13,4 +13,5 @@ public interface IProductService {
     void delete(Product product);
     Product findById(long id);
     boolean verifyName(String normalizedName);
+    boolean verifyName(String normalizedName, long idProduct);
 }
