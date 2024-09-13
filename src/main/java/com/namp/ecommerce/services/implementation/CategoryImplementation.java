@@ -73,7 +73,7 @@ public class CategoryImplementation implements ICategoryService {
     @Override
     public boolean verifyName(String normalizedName, long categoryId) {
         List<Category> categories = categoryDAO.findAll();
-        String name = normalizedName.replaceAll("\s+", "");
+        String name = normalizedName.replaceAll("\\s+", "");
 
         //Verifica si se repite el nombre en las demas categorías, menos con la que se está actualizando
         for (Category category : categories) {
