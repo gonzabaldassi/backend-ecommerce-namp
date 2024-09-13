@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,7 +88,19 @@ public class ProductImplementation implements IProductService{
     }
 
     @Override
-    public void delete(Product product) {
+    public void delete(Product product){
+
+        //Eliminar la imagen asociada con ese producto
+        String imgPath = "src/main/resources" + product.getImg();
+        // Creo el objeto Path para el archivo de la imagen
+        Path filePath = Paths.get(imgPath);
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Error al eliminar la imagen del producto: " + product.getName(), e);
+        }
+
+        // Luego elimino el objeto producto de la base de datos
         productDAO.delete(product);
     }
 
