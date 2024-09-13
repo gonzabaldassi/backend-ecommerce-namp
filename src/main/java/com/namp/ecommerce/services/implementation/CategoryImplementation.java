@@ -75,6 +75,7 @@ public class CategoryImplementation implements ICategoryService {
         List<Category> categories = categoryDAO.findAll();
         String name = normalizedName.replaceAll("\s+", "");
 
+        //Verifica si se repite el nombre en las demas categorías, menos con la que se está actualizando
         for (Category category : categories) {
             if (category.getIdCategory() != categoryId && name.equals(category.getName().replaceAll("\s+", ""))) {
                 return true;

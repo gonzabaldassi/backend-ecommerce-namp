@@ -113,7 +113,7 @@ public class ProductImplementation implements IProductService{
         List<Product> products = productDAO.findAll();
         String name = normalizedName.replaceAll("\\s+", "");
 
-        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        //Verifica si se repite el nombre en los demas productos, menos con el que se está actualizando
         for(Product product : products){
             if(product.getIdProduct()!=idProduct && name.equals(product.getName().replaceAll("\\s+", ""))){
                 return true;

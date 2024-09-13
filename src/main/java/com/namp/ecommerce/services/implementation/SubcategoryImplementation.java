@@ -82,7 +82,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         List<Subcategory> subcategories = subcategoryDAO.findAll();
         String name = normalizedName.replaceAll("\\s+", "");
 
-        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        //Verifica si se repite el nombre en las demas subcategorías, menos con la que se está actualizando
         for(Subcategory subcategory : subcategories){
             if(subcategory.getIdSubcategory() != idSubcategory && name.equals(subcategory.getName().replaceAll("\\s+", ""))){
                 return true;
