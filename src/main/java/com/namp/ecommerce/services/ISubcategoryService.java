@@ -13,4 +13,5 @@ public interface ISubcategoryService {
     void delete(Subcategory subcategory);
     Subcategory findById(long id);
     boolean verifyName(String normalizedName);
+    boolean verifyName(String normalizedName, long idSubcategory);
 }

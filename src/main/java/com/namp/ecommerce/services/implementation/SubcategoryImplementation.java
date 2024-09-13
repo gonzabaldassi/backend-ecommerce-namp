@@ -41,7 +41,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         //Subcategory repeatedCategory = subcategoryDAO.findByName(normalizedName);
 
         // Esta en la base de datos == SI
-        if(verifyName(normalizedName)) {
+        if(verifyName(normalizedName, existingSubcategory.getIdSubcategory())) {
             return null;
         }
 
@@ -76,4 +76,21 @@ public class SubcategoryImplementation implements ISubcategoryService {
 
         return false;
     }
+
+    @Override
+    public boolean verifyName(String normalizedName, long idSubcategory){
+        List<Subcategory> subcategories = subcategoryDAO.findAll();
+        String name = normalizedName.replaceAll("\\s+", "");
+
+        //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
+        for(Subcategory subcategory : subcategories){
+            if(subcategory.getIdSubcategory() != idSubcategory && name.equals(subcategory.getName().replaceAll("\\s+", ""))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }
