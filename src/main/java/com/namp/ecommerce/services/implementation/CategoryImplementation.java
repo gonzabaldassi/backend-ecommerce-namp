@@ -33,9 +33,9 @@ public class CategoryImplementation implements ICategoryService {
     @Override
     public Category update(Category existingCategory,  Category category) {
         // Normalizar los espacios en blanco y convertir a mayúsculas
-        String normalizedName = category.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+        String normalizedName = category.getName().replaceAll("\s+", " ").trim().toUpperCase();
 
-        if(verifyName(normalizedName)) {
+        if(verifyName(normalizedName,existingCategory.getIdCategory())) {
             return null;
         }
 
@@ -63,6 +63,20 @@ public class CategoryImplementation implements ICategoryService {
         //Comparar el nombre de la categoria que se quiere guardar, con todos los demas sin espacio para ver si es el mismo
         for(Category category : categories){
             if(name.equals(category.getName().replaceAll("\\s+", ""))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean verifyName(String normalizedName, long categoryId) {
+        List<Category> categories = categoryDAO.findAll();
+        String name = normalizedName.replaceAll("\s+", "");
+
+        for (Category category : categories) {
+            if (category.getIdCategory() != categoryId && name.equals(category.getName().replaceAll("\s+", ""))) {
                 return true;
             }
         }

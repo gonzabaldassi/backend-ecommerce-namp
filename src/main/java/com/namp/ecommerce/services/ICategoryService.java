@@ -11,4 +11,5 @@ public interface ICategoryService {
     void delete(Category category);
     Category findById(long id);
     boolean verifyName(String normalizedName);
+    boolean verifyName(String normalizedName, long categoryId);
 }

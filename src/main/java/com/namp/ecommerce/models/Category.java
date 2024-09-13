@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
-import java.util.List;
+
 
 @Data
 @AllArgsConstructor
