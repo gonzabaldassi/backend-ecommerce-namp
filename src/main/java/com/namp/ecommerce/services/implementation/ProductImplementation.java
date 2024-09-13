@@ -40,7 +40,7 @@ public class ProductImplementation implements IProductService{
 
             // Corroboro que el tipo de contenido sea una imagen
             if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
-                 throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
+                throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
             }
             // Obtengo el nombre original del archivo
             String fileName = file.getOriginalFilename();

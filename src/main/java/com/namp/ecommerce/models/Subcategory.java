@@ -34,9 +34,6 @@ public class Subcategory implements Serializable {
     @JoinColumn(name = "fk_category", referencedColumnName = "idCategory")
     private Category idCategory;
 
-    @OneToMany(mappedBy = "idSubcategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products;
-
     // Una categoria puede estar en muchos productos. Una subcategoria pertenece a una sola categoria
 
 }

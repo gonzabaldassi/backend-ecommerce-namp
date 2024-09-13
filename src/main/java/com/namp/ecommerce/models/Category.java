@@ -30,7 +30,5 @@ public class Category implements Serializable {
     @NotNull(message = "La descripcion no debe estar vacia")
     private String description;
 
-    
-    @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Subcategory> subCategories;
+
 }
