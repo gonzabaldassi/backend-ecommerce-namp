@@ -1,12 +1,21 @@
 package com.namp.ecommerce.services.implementation;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.namp.ecommerce.models.Product;
 import com.namp.ecommerce.repositories.IProductDAO;
 import com.namp.ecommerce.services.IProductService;
+import com.namp.ecommerce.error.InvalidFileFormatException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Service
 public class ProductImplementation implements IProductService{
@@ -20,7 +29,32 @@ public class ProductImplementation implements IProductService{
     }
 
     @Override
-    public Product save(Product product) {
+    public Product save(String productJson, MultipartFile file) throws IOException {
+
+        // Creo json a objeto
+        ObjectMapper objectMapper = new ObjectMapper();
+        Product product = objectMapper.readValue(productJson, Product.class);
+
+        if (!file.isEmpty()){
+            String contentType = file.getContentType();
+
+            // Corroboro que el tipo de contenido sea una imagen
+            if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
+                 throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
+            }
+            // Obtengo el nombre original del archivo
+            String fileName = file.getOriginalFilename();
+            // Path donde se guardan las imagenes
+            String uploadDir = "src/main/resources/images/";
+            // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
+            Path filePath = Paths.get(uploadDir, fileName);
+
+            // Guardo la imagen (si un archivo se llama igual en el path lo va a reemplazar)
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Seteo ruta al atributo img de product
+            product.setImg("/images/" + fileName);
+        }
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = product.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 

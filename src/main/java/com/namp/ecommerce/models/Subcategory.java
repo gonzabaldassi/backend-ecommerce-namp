@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +28,15 @@ public class Subcategory implements Serializable {
     private String description;
 
     @NotNull(message = "La categoria no puede estar vacia")
+
+    // Una categoria
     @ManyToOne
     @JoinColumn(name = "fk_category", referencedColumnName = "idCategory")
     private Category idCategory;
+
+    @OneToMany(mappedBy = "idSubcategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
+
+    // Una categoria puede estar en muchos productos. Una subcategoria pertenece a una sola categoria
+
 }

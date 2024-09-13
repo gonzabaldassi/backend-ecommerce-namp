@@ -1,5 +1,6 @@
 package com.namp.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,11 +37,13 @@ public class Product implements Serializable{
     @Min(value = 0, message = "El valor debe ser un número positivo")
     private int stock;
 
-    //private String img;
+    // path de la imagen
+    private String img;
     //Falta promocion
 
     @NotNull
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "fk_subcategory", referencedColumnName = "idSubcategory")
     private Subcategory idSubcategory;
 }
