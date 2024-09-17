@@ -70,7 +70,13 @@ public class ProductImplementation implements IProductService{
     }
 
     @Override
-    public Product update(Product existingProduct, Product product) {
+    public Product update(Product existingProduct, String productJson, MultipartFile file) throws IOException{
+        Path filePath = null;
+
+        // Convierto json a objeto
+        ObjectMapper objectMapper = new ObjectMapper();
+        Product product = objectMapper.readValue(productJson, Product.class);
+
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = product.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
@@ -83,6 +89,26 @@ public class ProductImplementation implements IProductService{
         existingProduct.setPrice(product.getPrice());
         existingProduct.setStock(product.getStock());
         existingProduct.setIdSubcategory(product.getIdSubcategory());
+
+        if (!file.isEmpty()){
+            String contentType = file.getContentType();
+
+            // Corroboro que el tipo de contenido sea una imagen
+            if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
+                throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
+            }
+            // Obtengo el nombre original del archivo
+            String fileName = file.getOriginalFilename();
+            // Path donde se guardan las imagenes
+            String uploadDir = "src/main/resources/images/";
+            // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
+            filePath = Paths.get(uploadDir, fileName);
+
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            // Seteo ruta al atributo img de product
+
+            existingProduct.setImg("/images/" + fileName);
+        }
 
         return productDAO.save(existingProduct);
     }
@@ -99,7 +125,6 @@ public class ProductImplementation implements IProductService{
         } catch (IOException e) {
             throw new RuntimeException("Error al eliminar la imagen del producto: " + product.getName(), e);
         }
-
         // Luego elimino el objeto producto de la base de datos
         productDAO.delete(product);
     }

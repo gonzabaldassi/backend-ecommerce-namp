@@ -69,14 +69,14 @@ public class ProductController {
     }
 
     @PutMapping("product/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable long id, @Valid @RequestBody Product product){
+    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{
             Product existingProduct = productService.findById(id);
 
             if (existingProduct == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto no existe");
             }
-            Product updatedProduct = productService.update(existingProduct, product);
+            Product updatedProduct = productService.update(existingProduct, productJson, file);
 
             if (updatedProduct == null){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre ingresado ya existe");
