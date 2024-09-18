@@ -1,4 +1,4 @@
-package com.namp.ecommerce.models;
+package com.namp.ecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Data
 @AllArgsConstructor
@@ -45,6 +43,5 @@ public class Product implements Serializable{
     @NotNull
     @ManyToOne
     @JoinColumn(name = "fk_subcategory", referencedColumnName = "idSubcategory")
-    @JsonBackReference
     private Subcategory idSubcategory;
 }

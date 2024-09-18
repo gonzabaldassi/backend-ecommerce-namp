@@ -1,7 +1,7 @@
-package com.namp.ecommerce.controllers;
+package com.namp.ecommerce.controller;
 
-import com.namp.ecommerce.models.Category;
-import com.namp.ecommerce.services.ICategoryService;
+import com.namp.ecommerce.model.Category;
+import com.namp.ecommerce.service.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class CategoryController {
     @GetMapping("category")
     public ResponseEntity<?> getCategories(){
         try{
-            return ResponseEntity.ok(categoryService.getCategories());
+            return ResponseEntity.ok(categoryService.getCategoriesWithSubcategories());
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
         }

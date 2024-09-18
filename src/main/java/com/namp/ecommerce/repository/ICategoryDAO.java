@@ -1,6 +1,6 @@
-package com.namp.ecommerce.repositories;
+package com.namp.ecommerce.repository;
 
-import com.namp.ecommerce.models.Category;
+import com.namp.ecommerce.model.Category;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

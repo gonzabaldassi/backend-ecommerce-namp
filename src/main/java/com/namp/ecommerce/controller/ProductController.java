@@ -1,4 +1,4 @@
-package com.namp.ecommerce.controllers;
+package com.namp.ecommerce.controller;
 
 
 import com.namp.ecommerce.error.InvalidFileFormatException;
@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.namp.ecommerce.models.Product;
-import com.namp.ecommerce.services.IProductService;
+import com.namp.ecommerce.model.Product;
+import com.namp.ecommerce.service.IProductService;
 
-import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 
 

@@ -1,8 +1,11 @@
-package com.namp.ecommerce.services.implementation;
+package com.namp.ecommerce.service.implementation;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.namp.ecommerce.models.Product;
-import com.namp.ecommerce.repositories.IProductDAO;
-import com.namp.ecommerce.services.IProductService;
+import com.namp.ecommerce.dto.ProductDTO;
+import com.namp.ecommerce.dto.SubcategoryDTO;
+import com.namp.ecommerce.mapper.EntityDtoMapper;
+import com.namp.ecommerce.model.Product;
+import com.namp.ecommerce.repository.IProductDAO;
+import com.namp.ecommerce.service.IProductService;
 import com.namp.ecommerce.error.InvalidFileFormatException;
 
 import java.io.IOException;
@@ -11,8 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +27,15 @@ public class ProductImplementation implements IProductService{
     @Autowired
     private IProductDAO productDAO;
 
+    @Autowired
+    private EntityDtoMapper entityDtoMapper;
+
     @Override
-    public List<Product> getProducts() {
-        return productDAO.findAll();
+    public List<ProductDTO> getProducts() {
+        return productDAO.findAll()
+                .stream()
+                .map(entityDtoMapper::convertProductToDto)
+                .collect(Collectors.toList());
     }
 
     @Override

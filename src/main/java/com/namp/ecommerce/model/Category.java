@@ -1,4 +1,4 @@
-package com.namp.ecommerce.models;
+package com.namp.ecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,8 +11,6 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Data
@@ -35,7 +33,6 @@ public class Category implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Subcategory> subcategories = new ArrayList<>();
 
 

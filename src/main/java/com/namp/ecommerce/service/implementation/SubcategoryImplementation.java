@@ -1,12 +1,16 @@
-package com.namp.ecommerce.services.implementation;
+package com.namp.ecommerce.service.implementation;
 
-import com.namp.ecommerce.models.Subcategory;
-import com.namp.ecommerce.repositories.ISubcategoryDAO;
-import com.namp.ecommerce.services.ISubcategoryService;
+import com.namp.ecommerce.dto.SubcategoryDTO;
+import com.namp.ecommerce.dto.SubcategoryWithProductsDTO;
+import com.namp.ecommerce.mapper.EntityDtoMapper;
+import com.namp.ecommerce.model.Subcategory;
+import com.namp.ecommerce.repository.ISubcategoryDAO;
+import com.namp.ecommerce.service.ISubcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubcategoryImplementation implements ISubcategoryService {
@@ -14,9 +18,23 @@ public class SubcategoryImplementation implements ISubcategoryService {
     @Autowired
     private ISubcategoryDAO subcategoryDAO;
 
+    @Autowired
+    private EntityDtoMapper entityDtoMapper;
+
     @Override
-    public List<Subcategory> getSubcategories() {
-        return subcategoryDAO.findAll();
+    public List<SubcategoryDTO> getSubcategories(){
+        return subcategoryDAO.findAll()
+                .stream()
+                .map(entityDtoMapper::convertSubcategoryToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubcategoryWithProductsDTO> getSubcategoriesWithProducts(){
+        return subcategoryDAO.findAll()
+                .stream()
+                .map(entityDtoMapper::convertSubcategoryWithProductsToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
