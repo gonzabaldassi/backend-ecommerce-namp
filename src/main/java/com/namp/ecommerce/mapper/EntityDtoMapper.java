@@ -78,6 +78,7 @@ public class EntityDtoMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setImg(product.getImg());
+        productDTO.setSubcategoryName(product.getIdSubcategory().getName());
 
         return productDTO;
     }
