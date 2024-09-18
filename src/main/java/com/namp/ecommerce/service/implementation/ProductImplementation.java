@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +55,13 @@ public class ProductImplementation implements IProductService{
             if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
                 throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
             }
-            // Obtengo el nombre original del archivo
-            String fileName = file.getOriginalFilename();
+
+            // Genero un nombre custom para la imagen usando el nombre del producto y un UUID
+            String fileExtension = contentType.equals("image/jpeg") ? ".jpg" : ".png";
+            String formattedDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            String fileName = product.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
+
             // Path donde se guardan las imagenes
             String uploadDir = "src/main/resources/images/";
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
