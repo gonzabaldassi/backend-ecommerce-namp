@@ -18,6 +18,15 @@ public class SubcategoryController {
     @GetMapping("subcategory")
     public ResponseEntity<?> getSubcategories(){
         try{
+            return ResponseEntity.ok(subcategoryService.getSubcategories());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+        }
+    }
+
+    @GetMapping("subcategoryWithProducts")
+    public ResponseEntity<?> getSubcategoriesWithProducts(){
+        try{
             return ResponseEntity.ok(subcategoryService.getSubcategoriesWithProducts());
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());

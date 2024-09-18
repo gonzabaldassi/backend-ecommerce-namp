@@ -11,8 +11,27 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api-namp")
 public class CategoryController {
+
     @Autowired
     private ICategoryService categoryService;
+
+    @GetMapping("category")
+    public ResponseEntity<?> getCategories(){
+        try{
+            return ResponseEntity.ok(categoryService.getCategories());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+        }
+    }
+
+    @GetMapping("categoryWithSubcategories")
+    public ResponseEntity<?> getCategoriesWithSubcategories(){
+        try{
+            return ResponseEntity.ok(categoryService.getCategoriesWithSubcategories());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+        }
+    }
 
     @PostMapping("category")
     public ResponseEntity<?> createCategory(@Valid @RequestBody Category category) {
@@ -29,16 +48,6 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la categoria:"+e.getMessage());
         }
     }
-
-    @GetMapping("category")
-    public ResponseEntity<?> getCategories(){
-        try{
-            return ResponseEntity.ok(categoryService.getCategories());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
-        }
-    }
-
 
     @DeleteMapping("category/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable long id){
