@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -44,4 +46,7 @@ public class Product implements Serializable{
     @ManyToOne
     @JoinColumn(name = "fk_subcategory", referencedColumnName = "idSubcategory")
     private Subcategory idSubcategory;
+
+    @OneToMany(mappedBy = "idProduct")
+    private List<ProductCombo> productCombo = new ArrayList<>();
 }

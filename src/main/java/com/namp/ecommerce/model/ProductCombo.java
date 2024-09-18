@@ -32,11 +32,11 @@ public class ProductCombo implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "fk_product", referencedColumnName = "idProduct")
-    private Category idProduct;
+    private Product idProduct;
 
     @ManyToOne
     @JoinColumn(name = "fk_combo", referencedColumnName = "idCombo")
-    private Category idCombo;
+    private Combo idCombo;
 
 }
 

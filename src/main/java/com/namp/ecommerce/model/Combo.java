@@ -40,7 +40,7 @@ public class Combo implements Serializable {
     private double price;
 
     @OneToMany(mappedBy = "idCombo")
-    private List<ProductCombo> ProductCombo = new ArrayList<>();
+    private List<ProductCombo> productCombo = new ArrayList<>();
 }
 
 

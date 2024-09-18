@@ -2,9 +2,7 @@ package com.namp.ecommerce.mapper;
 
 
 import com.namp.ecommerce.dto.*;
-import com.namp.ecommerce.model.Category;
-import com.namp.ecommerce.model.Product;
-import com.namp.ecommerce.model.Subcategory;
+import com.namp.ecommerce.model.*;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -82,5 +80,63 @@ public class EntityDtoMapper {
         productDTO.setImg(product.getImg());
 
         return productDTO;
+    }
+
+    //Metodo para convertir Product a ProductWithITProductComboDTO
+    public ProductWithITProductComboDTO convertProductWithITProductComboToDto(Product product) {
+        ProductWithITProductComboDTO productDTO = new ProductWithITProductComboDTO();
+
+        productDTO.setIdProduct(product.getIdProduct());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setStock(product.getStock());
+        productDTO.setImg(product.getImg());
+
+        productDTO.setProductCombo(product.getProductCombo()
+                .stream()
+                .map(this::convertProductComboToDto)
+                .collect(Collectors.toList()));
+
+        return productDTO;
+    }
+
+    //Metodo para convertir Combo a ComboDTO
+    public ComboDTO convertComboToDto(Combo combo) {
+        ComboDTO comboDTO = new ComboDTO();
+
+        comboDTO.setIdCombo(combo.getIdCombo());
+        comboDTO.setName(combo.getName());
+        comboDTO.setDescription(combo.getDescription());
+        comboDTO.setPrice(combo.getPrice());
+
+        return comboDTO;
+    }
+
+    //Metodo para convertir Combo a ComboWithITProductComboDTO
+    public ComboWithITProductComboDTO convertComboWithITProductComboToDto(Combo combo) {
+        ComboWithITProductComboDTO comboWithITProductComboDTO = new ComboWithITProductComboDTO();
+
+        comboWithITProductComboDTO.setIdCombo(combo.getIdCombo());
+        comboWithITProductComboDTO.setName(combo.getName());
+        comboWithITProductComboDTO.setDescription(combo.getDescription());
+        comboWithITProductComboDTO.setPrice(combo.getPrice());
+
+        comboWithITProductComboDTO.setProductCombo(combo.getProductCombo()
+                .stream()
+                .map(this::convertProductComboToDto)
+                .collect(Collectors.toList()));
+
+        return comboWithITProductComboDTO;
+    }
+
+    //Metodo para convertir ProductCombo a ProductComboDTO
+    public ProductComboDTO convertProductComboToDto(ProductCombo productCombo) {
+        ProductComboDTO productComboDTO = new ProductComboDTO();
+
+        productComboDTO.setIdProductCombo(productCombo.getIdProductCombo());
+        productComboDTO.setCant(productCombo.getCant());
+
+        return productComboDTO;
     }
 }
