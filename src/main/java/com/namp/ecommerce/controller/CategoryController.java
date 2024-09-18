@@ -33,11 +33,12 @@ public class CategoryController {
     @GetMapping("category")
     public ResponseEntity<?> getCategories(){
         try{
-            return ResponseEntity.ok(categoryService.getCategoriesWithSubcategories());
+            return ResponseEntity.ok(categoryService.getCategories());
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
         }
     }
+
 
     @DeleteMapping("category/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable long id){
