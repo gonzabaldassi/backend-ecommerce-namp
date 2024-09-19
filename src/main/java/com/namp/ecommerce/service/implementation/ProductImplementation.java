@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +37,9 @@ public class ProductImplementation implements IProductService{
 
     @Autowired
     private EntityDtoMapper entityDtoMapper;
+
+    @Value("${image.upload.dir}")
+    private String uploadDir;
 
     @Override
     public List<ProductDTO> getProducts() {
@@ -68,7 +72,8 @@ public class ProductImplementation implements IProductService{
             String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
 
             // Path donde se guardan las imagenes
-            String uploadDir = "src/main/resources/images/";
+            // String uploadDir = "/home/agustin06/IdeaProjects/images";
+
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
             filePath = Paths.get(uploadDir, fileName);
 
@@ -135,8 +140,6 @@ public class ProductImplementation implements IProductService{
 
             String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
 
-            // Path donde se guardan las imagenes
-            String uploadDir = "src/main/resources/images/";
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
             filePath = Paths.get(uploadDir, fileName);
 
@@ -159,15 +162,15 @@ public class ProductImplementation implements IProductService{
         if (product == null){
             throw new EntityNotFoundException("Product not found with ID: " + productDTO.getIdProduct());
         }
-
+        String imgPathDto = productDTO.getImg().replace("/images","");
         //Eliminar la imagen asociada con ese producto
-        String imgPath = "src/main/resources" + productDTO.getImg();
+        String imgPath = uploadDir + imgPathDto;
         // Creo el objeto Path para el archivo de la imagen
         Path filePath = Paths.get(imgPath);
         try {
             Files.delete(filePath);
         } catch (IOException e) {
-            throw new RuntimeException("Error al eliminar la imagen del producto: " + product.getName(), e);
+            throw new RuntimeException(product.getName(), e);
         }
 
         // Luego elimino el objeto producto de la base de datos

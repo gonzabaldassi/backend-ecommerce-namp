@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         // Configuracion del acceso a la carpeta de imagenes
-        registry.addResourceHandler("/images/**").addResourceLocations("classpath:/images/");
+        registry.addResourceHandler("/images/**").addResourceLocations("file:/home/agustin06/IdeaProjects/images");
     }
 
     @Override

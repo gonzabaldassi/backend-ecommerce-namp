@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class Product implements Serializable{
     private int stock;
 
     @NotNull
-    // path de la imagen
+    @Value("${image.upload.dir}")
     private String img;
     //Falta promocion
 
