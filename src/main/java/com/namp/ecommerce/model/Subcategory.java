@@ -29,8 +29,6 @@ public class Subcategory implements Serializable {
     private String description;
 
     @NotNull(message = "La categoria no puede estar vacia")
-
-    // Una categoria
     @ManyToOne
     @JoinColumn(name = "fk_category", referencedColumnName = "idCategory")
     private Category idCategory;

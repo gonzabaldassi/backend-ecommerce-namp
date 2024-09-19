@@ -7,6 +7,7 @@ import com.namp.ecommerce.mapper.EntityDtoMapper;
 import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.repository.ICategoryDAO;
 import com.namp.ecommerce.service.ICategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -38,41 +39,65 @@ public class CategoryImplementation implements ICategoryService {
     }
 
     @Override
-    public Category save(Category category) {
+    public CategoryDTO save(CategoryDTO categoryDTO) {
         // Normalizar los espacios en blanco y convertir a mayúsculas
-        String normalizedName = category.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+        String normalizedName = categoryDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
         if(!verifyName(normalizedName)) {
-            category.setName(normalizedName);
+            categoryDTO.setName(normalizedName);
 
-            return categoryDAO.save(category);
+            Category category = entityDtoMapper.convertDtoToCategory(categoryDTO);
+
+            Category savedCategory = categoryDAO.save(category);
+
+            return entityDtoMapper.convertCategoryToDto(savedCategory);
         }
         return null;
     }
 
     @Override
-    public Category update(Category existingCategory,  Category category) {
-        // Normalizar los espacios en blanco y convertir a mayúsculas
-        String normalizedName = category.getName().replaceAll("\s+", " ").trim().toUpperCase();
-
-        if(verifyName(normalizedName,existingCategory.getIdCategory())) {
+    public CategoryDTO update(CategoryDTO existingCategoryDTO,  Category category) {
+        //Buscar la categoria existente
+        Category existingCategory = categoryDAO.findByIdCategory(existingCategoryDTO.getIdCategory());
+        if (existingCategory == null) {
             return null;
         }
 
+        // Normalizar los espacios en blanco y convertir a mayúsculas
+        String normalizedName = category.getName().replaceAll("\s+", " ").trim().toUpperCase();
+
+        //Verifica que el nombre esta disponible
+        if(verifyName(normalizedName,existingCategoryDTO.getIdCategory())) {
+            return null; //Si el nombre ya esta siendo utilizado
+        }
+
+        //Actualizar los campos de la entidad existente
         existingCategory.setName(normalizedName);
         existingCategory.setDescription(category.getDescription());
 
-        return categoryDAO.save(existingCategory);
+        //Guardar la categoria actualizada
+        Category updatedCategory = categoryDAO.save(existingCategory);
+
+        //Devolvemos el DTO de la categoria actualizada
+        return entityDtoMapper.convertCategoryToDto(updatedCategory);
     }
 
     @Override
-    public void delete(Category category) {
+    public void delete(CategoryDTO categoryDTO) {
+        Category category = categoryDAO.findByIdCategory(categoryDTO.getIdCategory());
+        if (category == null) {
+            throw new EntityNotFoundException("Category not found with ID: " + categoryDTO.getIdCategory());
+        }
         categoryDAO.delete(category);
     }
 
     @Override
-    public Category findById(long id) {
-        return categoryDAO.findByIdCategory(id);
+    public CategoryDTO findById(long id) {
+        Category category = categoryDAO.findByIdCategory(id);
+        if (category != null) {
+            return entityDtoMapper.convertCategoryToDto(category);
+        }
+        return null;
     }
 
     @Override

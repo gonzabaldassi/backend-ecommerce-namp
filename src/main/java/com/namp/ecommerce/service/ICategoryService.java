@@ -9,10 +9,10 @@ import java.util.List;
 public interface ICategoryService {
     List<CategoryDTO> getCategories();
     List<CategoryWithSubcategoriesDTO> getCategoriesWithSubcategories();
-    Category save(Category category);
-    Category update(Category existingCategory, Category category);
-    void delete(Category category);
-    Category findById(long id);
+    CategoryDTO save(CategoryDTO categoryDTO);
+    CategoryDTO update(CategoryDTO existingCategory, Category category);
+    void delete(CategoryDTO categoryDTO);
+    CategoryDTO findById(long id);
     boolean verifyName(String normalizedName);
     boolean verifyName(String normalizedName, long categoryId);
 }

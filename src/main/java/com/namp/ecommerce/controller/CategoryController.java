@@ -1,5 +1,6 @@
 package com.namp.ecommerce.controller;
 
+import com.namp.ecommerce.dto.CategoryDTO;
 import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.service.ICategoryService;
 import jakarta.validation.Valid;
@@ -20,7 +21,8 @@ public class CategoryController {
         try{
             return ResponseEntity.ok(categoryService.getCategories());
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the categories:"+e.getMessage());
         }
     }
 
@@ -29,61 +31,68 @@ public class CategoryController {
         try{
             return ResponseEntity.ok(categoryService.getCategoriesWithSubcategories());
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the categories:"+e.getMessage());
         }
     }
 
     @PostMapping("category")
-    public ResponseEntity<?> createCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         try{
-            Category createdCategory = categoryService.save(category);
+            CategoryDTO createdCategoryDTO = categoryService.save(categoryDTO);
 
-            if (createdCategory == null){
+            if (createdCategoryDTO == null){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Esta categoria ya se encuentra registrada");
+                        .body("This category already exists");
             }
 
-            return ResponseEntity.ok(createdCategory);
+            return ResponseEntity.ok(createdCategoryDTO);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la categoria:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating the category:"+e.getMessage());
         }
     }
 
     @DeleteMapping("category/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable long id){
         try{
-            Category category = categoryService.findById(id);
+            CategoryDTO categoryDTO = categoryService.findById(id);
 
-            if (category == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La categoría no existe");
+            if (categoryDTO == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The category does not exist");
             }
 
-            categoryService.delete(category);
+            categoryService.delete(categoryDTO);
 
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la categoria: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting the category: " + e.getMessage());
         }
     }
 
     @PutMapping("category/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable long id, @Valid @RequestBody Category category){
         try{
-            Category existingCategory = categoryService.findById(id);
+            CategoryDTO existingCategoryDTO = categoryService.findById(id);
 
-            if (existingCategory == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La categoria no existe");
+            if (existingCategoryDTO == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The category does not exist");
             }
 
-            Category updatedCategory = categoryService.update(existingCategory, category);
+            CategoryDTO updatedCategoryDTO = categoryService.update(existingCategoryDTO,category);
 
-            if (updatedCategory == null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre ingresado ya existe");
+            if (updatedCategoryDTO == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("The entered name already exists");
             }
 
-            return ResponseEntity.ok(updatedCategory);
+            return ResponseEntity.ok(updatedCategoryDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la categoria: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating the category: " + e.getMessage());
         }
     }
 }

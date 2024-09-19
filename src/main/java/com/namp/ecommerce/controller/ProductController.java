@@ -1,6 +1,7 @@
 package com.namp.ecommerce.controller;
 
 
+import com.namp.ecommerce.dto.ProductDTO;
 import com.namp.ecommerce.error.InvalidFileFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,36 +33,40 @@ public class ProductController {
     @PostMapping("product")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{
-            Product createdProduct = productService.save(productJson, file);
+            ProductDTO createdProductDTO = productService.save(productJson, file);
 
-            if (createdProduct == null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Este producto ya se encuentra registrado");
+            if (createdProductDTO == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("This product already exists");
             }
 
-            return ResponseEntity.ok(createdProduct);
+            return ResponseEntity.ok(createdProductDTO);
         }catch (InvalidFileFormatException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
         catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el producto");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating the product");
         }
     }
 
     @DeleteMapping("product/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable long id){
         try{
-            Product product= productService.findById(id);
+            ProductDTO productDTO = productService.findById(id);
 
-            if (product == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La subCategoria no existe");
+            if (productDTO == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The product does not exist");
             }
 
-            productService.delete(product);
-
+            productService.delete(productDTO);
 
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el producto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting the product: " + e.getMessage());
         }
 
     
@@ -70,20 +75,23 @@ public class ProductController {
     @PutMapping("product/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{
-            Product existingProduct = productService.findById(id);
+            ProductDTO existingProduct = productService.findById(id);
 
             if (existingProduct == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto no existe");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The product does not exist");
             }
-            Product updatedProduct = productService.update(existingProduct, productJson, file);
+            ProductDTO updatedProductDTO = productService.update(existingProduct, productJson, file);
 
-            if (updatedProduct == null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre ingresado ya existe");
+            if (updatedProductDTO == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("The entered name already exists");
             }
 
-            return ResponseEntity.ok(updatedProduct);
+            return ResponseEntity.ok(updatedProductDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el producto: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating the product: " + e.getMessage());
         }
     }
     

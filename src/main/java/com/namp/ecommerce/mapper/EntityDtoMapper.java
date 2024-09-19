@@ -3,12 +3,72 @@ package com.namp.ecommerce.mapper;
 
 import com.namp.ecommerce.dto.*;
 import com.namp.ecommerce.model.*;
+import com.namp.ecommerce.repository.ICategoryDAO;
+import com.namp.ecommerce.repository.ISubcategoryDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
 public class EntityDtoMapper {
+
+    @Autowired
+    private ISubcategoryDAO subcategoryDAO;
+
+    @Autowired
+    private ICategoryDAO categoryDAO;
+
+
+    /*
+    /---------------------------------------------------------------------------/
+    /--------------------DTOs To Real Instances---------------------------------/
+    /---------------------------------------------------------------------------/
+    */
+
+
+    //Metodo para convertir de CategoryDTO a Category
+    public Category convertDtoToCategory(CategoryDTO categoryDTO) {
+        Category category = new Category();
+
+        category.setName(categoryDTO.getName());
+        category.setDescription(categoryDTO.getDescription());
+
+        return category;
+    }
+
+    //Metodo para convertir de SubcategoryDTO a Subcategory
+    public Subcategory convertDtoToSubcategory(SubcategoryDTO subcategoryDTO) {
+        Subcategory subcategory = new Subcategory();
+
+        subcategory.setName(subcategoryDTO.getName());
+        subcategory.setDescription(subcategoryDTO.getDescription());
+        subcategory.setIdCategory(categoryDAO.findById(subcategoryDTO.getIdCategory().getIdCategory()));
+
+        return subcategory;
+    }
+
+    //Metodo para convertir de ProductDTO a Product
+    public Product convertDtoToProduct(ProductDTO productDTO) {
+        Product product = new Product();
+
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setStock(productDTO.getStock());
+        product.setImg(productDTO.getImg());
+        product.setIdSubcategory(subcategoryDAO.findById(productDTO.getIdSubcategory().getIdSubcategory()));
+
+        return product;
+    }
+
+
+    /*
+    /---------------------------------------------------------------------------/
+    /--------------------Real instances to DTOs---------------------------------/
+    /---------------------------------------------------------------------------/
+    */
+
 
     //Metodo para convertir Category a CategoryDTO
     public CategoryDTO convertCategoryToDto(Category category) {
@@ -45,7 +105,7 @@ public class EntityDtoMapper {
         subcategoryDTO.setName(subcategory.getName());
         subcategoryDTO.setDescription(subcategory.getDescription());
 
-        subcategoryDTO.setCategoryName(subcategory.getIdCategory().getName());
+        subcategoryDTO.setIdCategory(this.convertCategoryToDto(subcategory.getIdCategory()));
 
         return subcategoryDTO;
     }
@@ -78,7 +138,9 @@ public class EntityDtoMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setImg(product.getImg());
-        productDTO.setSubcategoryName(product.getIdSubcategory().getName());
+        //NO SIRVE MAS
+        //productDTO.setSubcategoryName(product.getIdSubcategory().getName());
+        productDTO.setIdSubcategory(this.convertSubcategoryToDto(product.getIdSubcategory()));
 
         return productDTO;
     }

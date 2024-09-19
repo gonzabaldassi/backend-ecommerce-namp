@@ -12,10 +12,10 @@ import java.util.List;
 public interface ISubcategoryService {
     List<SubcategoryDTO> getSubcategories();
     List<SubcategoryWithProductsDTO> getSubcategoriesWithProducts();
-    Subcategory save(Subcategory subcategory);
-    Subcategory update(Subcategory existingSubcategory, Subcategory subcategory);
-    void delete(Subcategory subcategory);
-    Subcategory findById(long id);
+    SubcategoryDTO save(SubcategoryDTO subcategoryDTO);
+    SubcategoryDTO update(SubcategoryDTO existingSubcategoryDTO, Subcategory subcategory);
+    void delete(SubcategoryDTO subcategoryDTO);
+    SubcategoryDTO findById(long id);
     boolean verifyName(String normalizedName);
     boolean verifyName(String normalizedName, long idSubcategory);
 

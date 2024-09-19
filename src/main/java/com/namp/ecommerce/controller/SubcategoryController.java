@@ -1,5 +1,6 @@
 package com.namp.ecommerce.controller;
 
+import com.namp.ecommerce.dto.SubcategoryDTO;
 import com.namp.ecommerce.model.Subcategory;
 import com.namp.ecommerce.service.ISubcategoryService;
 import jakarta.validation.Valid;
@@ -20,7 +21,8 @@ public class SubcategoryController {
         try{
             return ResponseEntity.ok(subcategoryService.getSubcategories());
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the subcategories:"+e.getMessage());
         }
     }
 
@@ -29,36 +31,39 @@ public class SubcategoryController {
         try{
             return ResponseEntity.ok(subcategoryService.getSubcategoriesWithProducts());
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar las categorias:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the subcategories:"+e.getMessage());
         }
     }
 
     @PostMapping("subcategory")
-    public ResponseEntity<?> createSubcategory(@Valid @RequestBody Subcategory subCategory) {
+    public ResponseEntity<?> createSubcategory(@Valid @RequestBody SubcategoryDTO subcategoryDTO) {
         try{
-            Subcategory createdSubCategory = subcategoryService.save(subCategory);
+            SubcategoryDTO createdSubCategoryDTO = subcategoryService.save(subcategoryDTO);
 
-            if (createdSubCategory == null){
+            if (createdSubCategoryDTO == null){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Esta subCategoria ya se encuentra registrada");
+                        .body("This subcategory already exists");
             }
 
-            return ResponseEntity.ok(createdSubCategory);
+            return ResponseEntity.ok(createdSubCategoryDTO);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la subCategoria:"+e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating the subcategory:"+e.getMessage());
         }
     }
 
     @DeleteMapping("subcategory/{id}")
     public ResponseEntity<?> deleteSubcategory(@PathVariable long id){
         try{
-            Subcategory subcategory = subcategoryService.findById(id);
+            SubcategoryDTO subcategoryDTO = subcategoryService.findById(id);
 
-            if (subcategory == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La subCategoria no existe");
+            if (subcategoryDTO == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The subcategory does not exist");
             }
 
-            subcategoryService.delete(subcategory);
+            subcategoryService.delete(subcategoryDTO);
 
 
             return ResponseEntity.ok().build();
@@ -70,20 +75,23 @@ public class SubcategoryController {
     @PutMapping("subcategory/{id}")
     public ResponseEntity<?> updateSubcategory(@PathVariable long id, @Valid @RequestBody Subcategory subcategory){
         try{
-            Subcategory existinSubcategory = subcategoryService.findById(id);
+            SubcategoryDTO existinSubcategoryDTO = subcategoryService.findById(id);
 
-            if (existinSubcategory == null){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La subcategoria no existe");
+            if (existinSubcategoryDTO == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("The subcategory does not exist");
             }
-            Subcategory updatedSubcategory = subcategoryService.update(existinSubcategory, subcategory);
+            SubcategoryDTO updatedSubcategoryDTO = subcategoryService.update(existinSubcategoryDTO, subcategory);
 
-            if (updatedSubcategory == null){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre ingresado ya existe");
+            if (updatedSubcategoryDTO == null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("The entered name already exists");
             }
 
-            return ResponseEntity.ok(updatedSubcategory);
+            return ResponseEntity.ok(updatedSubcategoryDTO);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la subcategoria: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating the subcategory: " + e.getMessage());
         }
     }
 }

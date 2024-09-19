@@ -3,9 +3,11 @@ package com.namp.ecommerce.service.implementation;
 import com.namp.ecommerce.dto.SubcategoryDTO;
 import com.namp.ecommerce.dto.SubcategoryWithProductsDTO;
 import com.namp.ecommerce.mapper.EntityDtoMapper;
+import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.model.Subcategory;
 import com.namp.ecommerce.repository.ISubcategoryDAO;
 import com.namp.ecommerce.service.ISubcategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,46 +40,67 @@ public class SubcategoryImplementation implements ISubcategoryService {
     }
 
     @Override
-    public Subcategory save(Subcategory subcategory) {
+    public SubcategoryDTO save(SubcategoryDTO subcategoryDTO) {
         // Normalizar los espacios en blanco y convertir a mayúsculas
-        String normalizedName = subcategory.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+        String normalizedName = subcategoryDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
         if(!verifyName(normalizedName)) {
-            subcategory.setName(normalizedName);
+            subcategoryDTO.setName(normalizedName);
 
-            return subcategoryDAO.save(subcategory);
+            Subcategory subcategory = entityDtoMapper.convertDtoToSubcategory(subcategoryDTO);
+
+            Subcategory savedSubcategory = subcategoryDAO.save(subcategory);
+
+            return entityDtoMapper.convertSubcategoryToDto(savedSubcategory);
         }
         return null;
 
     }
 
     @Override
-    public Subcategory update(Subcategory existingSubcategory, Subcategory subcategory) {
-        String normalizedName = subcategory.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+    public SubcategoryDTO update(SubcategoryDTO existingSubcategoryDTO, Subcategory subcategory) {
 
-        // Verifica si el nombre esta repetido en la base de datos
-        //Subcategory repeatedCategory = subcategoryDAO.findByName(normalizedName);
-
-        // Esta en la base de datos == SI
-        if(verifyName(normalizedName, existingSubcategory.getIdSubcategory())) {
+        //Buscar la categoria existente
+        Subcategory existingSubcategory = subcategoryDAO.findByIdSubcategory(existingSubcategoryDTO.getIdSubcategory());
+        if (existingSubcategory == null) {
             return null;
         }
 
+        // Normalizar los espacios en blanco y convertir a mayúsculas
+        String normalizedName = subcategory.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+
+        //Verifica que el nombre esta disponible
+        if(verifyName(normalizedName, existingSubcategoryDTO.getIdSubcategory())) {
+            return null;
+        }
+
+        //Actualizar los campos de la entidad existente
         existingSubcategory.setName(normalizedName);
         existingSubcategory.setDescription(subcategory.getDescription());
         existingSubcategory.setIdCategory(subcategory.getIdCategory());
 
-        return subcategoryDAO.save(existingSubcategory);
+        //Guardar la subcategoria actualizada
+        Subcategory updatedSubcategory = subcategoryDAO.save(existingSubcategory);
+
+        //Devolvemos el DTO de la subcategoria actualizada
+        return entityDtoMapper.convertSubcategoryToDto(updatedSubcategory);
     }
 
     @Override
-    public void delete(Subcategory subcategory) {
+    public void delete(SubcategoryDTO subcategoryDTO) {
+        Subcategory subcategory = subcategoryDAO.findByIdSubcategory(subcategoryDTO.getIdSubcategory());
+        if (subcategory == null) {
+            throw new EntityNotFoundException("Subcategory not foundwith ID: " + subcategoryDTO.getIdSubcategory());
+        }
         subcategoryDAO.delete(subcategory);
-
     }
 
-    public Subcategory findById(long id) {
-        return subcategoryDAO.findByIdSubcategory(id);
+    public SubcategoryDTO findById(long id) {
+        Subcategory subcategory = subcategoryDAO.findByIdSubcategory(id);
+        if (subcategory != null) {
+            return entityDtoMapper.convertSubcategoryToDto(subcategory);
+        }
+        return null;
     }
 
     @Override
@@ -109,6 +132,4 @@ public class SubcategoryImplementation implements ISubcategoryService {
 
         return false;
     }
-
-
 }
