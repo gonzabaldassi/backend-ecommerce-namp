@@ -128,25 +128,25 @@ public class ProductImplementation implements IProductService{
 
         //Hago la verificacion de imagen
         if (!file.isEmpty()){
+
             String contentType = file.getContentType();
 
             // Corroboro que el tipo de contenido sea una imagen
             if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
                 throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
             }
+
             // Genero un nombre custom para la imagen usando el nombre del producto y un UUID
             String fileExtension = contentType.equals("image/jpeg") ? ".jpg" : ".png";
             String formattedDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
             String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
 
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
             filePath = Paths.get(uploadDir, fileName);
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            // Seteo ruta al atributo img de product
 
-            existingProductDTO.setImg("/images/" + fileName);
+            existingProduct.setImg("/images/" + fileName);
         }
 
         //Guardamos el producto actualizado

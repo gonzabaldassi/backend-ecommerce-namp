@@ -1,5 +1,6 @@
 package com.namp.ecommerce;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -7,10 +8,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    @Value("${image.upload.dir}")
+    private String uploadDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry){
         // Configuracion del acceso a la carpeta de imagenes
-        registry.addResourceHandler("/images/**").addResourceLocations("file:/home/agustin06/IdeaProjects/images");
+        registry.addResourceHandler("/images/**").addResourceLocations("file:"+uploadDir+"/");
     }
 
     @Override
