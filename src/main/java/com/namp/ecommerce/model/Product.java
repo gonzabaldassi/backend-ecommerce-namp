@@ -39,7 +39,6 @@ public class Product implements Serializable{
     @Min(value = 0, message = "El valor debe ser un número positivo")
     private int stock;
 
-    @NotNull
     @Value("${image.upload.dir}")
     private String img;
     //Falta promocion

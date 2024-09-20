@@ -1,7 +1,6 @@
 package com.namp.ecommerce.service.implementation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.namp.ecommerce.dto.ProductDTO;
-import com.namp.ecommerce.dto.SubcategoryDTO;
 import com.namp.ecommerce.mapper.EntityDtoMapper;
 import com.namp.ecommerce.model.Product;
 import com.namp.ecommerce.repository.IProductDAO;
@@ -127,7 +126,7 @@ public class ProductImplementation implements IProductService{
         existingProduct.setIdSubcategory(subcategoryDAO.findById(existingProductDTO.getIdSubcategory().getIdSubcategory()));
 
         //Hago la verificacion de imagen
-        if (!file.isEmpty()){
+        if (file != null && !file.isEmpty()){
 
             String contentType = file.getContentType();
 

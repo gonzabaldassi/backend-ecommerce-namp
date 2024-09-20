@@ -73,7 +73,7 @@ public class ProductController {
     }
 
     @PutMapping("product/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
+    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestParam("product") String productJson, @RequestParam(value = "file", required = false) MultipartFile file){
         try{
             ProductDTO existingProduct = productService.findById(id);
 
