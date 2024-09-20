@@ -40,6 +40,17 @@ public class SubcategoryImplementation implements ISubcategoryService {
     }
 
     @Override
+    public SubcategoryWithProductsDTO getSubcategoriesIdWithProducts(long id){
+        Subcategory subcategory = subcategoryDAO.findById(id);
+
+        if (subcategory == null){
+            return  null;
+        }
+        return entityDtoMapper.convertSubcategoryIdWithProductsToDto(subcategory);
+    }
+
+
+    @Override
     public SubcategoryDTO save(SubcategoryDTO subcategoryDTO) {
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = subcategoryDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();

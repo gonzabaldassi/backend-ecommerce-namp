@@ -63,14 +63,10 @@ public class EntityDtoMapper {
     }
 
 
-    /*
-    /---------------------------------------------------------------------------/
-    /--------------------Real instances to DTOs---------------------------------/
-    /---------------------------------------------------------------------------/
-    */
 
 
-    //Metodo para convertir Category a CategoryDTO
+    //-------------------------------- CATEGORY ------------------------------------/
+
     public CategoryDTO convertCategoryToDto(Category category) {
         CategoryDTO categoryDTO = new CategoryDTO();
 
@@ -81,7 +77,6 @@ public class EntityDtoMapper {
         return categoryDTO;
     }
 
-   //Metodo para convertir Category a CategoryWithSubcategoriesDTO
     public CategoryWithSubcategoriesDTO convertCategoryWithSubcategoryToDto(Category category) {
         CategoryWithSubcategoriesDTO categoryWithSubcategoryDTO = new CategoryWithSubcategoriesDTO();
 
@@ -97,7 +92,24 @@ public class EntityDtoMapper {
         return categoryWithSubcategoryDTO;
     }
 
-    //Metodo para convertir Subcategory a SubcategoryDTO
+    public CategoryWithSubcategoriesDTO convertCategoryIdWithSubcategoryToDto(Category category) {
+        CategoryWithSubcategoriesDTO categoryIdWithSubcategoryDTO = new CategoryWithSubcategoriesDTO();
+
+        categoryIdWithSubcategoryDTO.setIdCategory(category.getIdCategory());
+        categoryIdWithSubcategoryDTO.setName(category.getName());
+        categoryIdWithSubcategoryDTO.setDescription(category.getDescription());
+
+        categoryIdWithSubcategoryDTO.setSubcategories(category.getSubcategories()
+                .stream()
+                .map(this::convertSubcategoryToDto)
+                .collect(Collectors.toList()));
+
+        return categoryIdWithSubcategoryDTO;
+    }
+    //-----------------------------------------------------------------------------/
+
+    //-------------------------------- SUBCATEGORY ------------------------------------/
+
     public SubcategoryDTO convertSubcategoryToDto(Subcategory subcategory){
         SubcategoryDTO subcategoryDTO = new SubcategoryDTO();
 
@@ -110,7 +122,6 @@ public class EntityDtoMapper {
         return subcategoryDTO;
     }
 
-    //Metodo para convertir Subcategory a SubcategoryWithProductsDTO
     public SubcategoryWithProductsDTO convertSubcategoryWithProductsToDto(Subcategory subcategory) {
         SubcategoryWithProductsDTO subcategoryWithProductsDTO = new SubcategoryWithProductsDTO();
 
@@ -128,7 +139,26 @@ public class EntityDtoMapper {
         return subcategoryWithProductsDTO;
     }
 
-    //Metodo para convertir Product a ProductDTO
+    public SubcategoryWithProductsDTO convertSubcategoryIdWithProductsToDto(Subcategory subcategory) {
+        SubcategoryWithProductsDTO subcategoryIdWithProductsDTO = new SubcategoryWithProductsDTO();
+
+        subcategoryIdWithProductsDTO.setIdSubcategory(subcategory.getIdSubcategory());
+        subcategoryIdWithProductsDTO.setName(subcategory.getName());
+        subcategoryIdWithProductsDTO.setDescription(subcategory.getDescription());
+        subcategoryIdWithProductsDTO.setCategoryName(subcategory.getIdCategory().getName());
+
+        subcategoryIdWithProductsDTO.setProducts(subcategory.getProducts()
+                .stream()
+                .map(this::convertProductToDto)
+                .collect(Collectors.toList()));
+
+        return subcategoryIdWithProductsDTO;
+    }
+
+    //-----------------------------------------------------------------------------/
+
+    //-------------------------------- PRODUCT ------------------------------------/
+
     public ProductDTO convertProductToDto(Product product) {
         ProductDTO productDTO = new ProductDTO();
 
@@ -145,7 +175,6 @@ public class EntityDtoMapper {
         return productDTO;
     }
 
-    //Metodo para convertir Product a ProductWithITProductComboDTO
     public ProductWithITProductComboDTO convertProductWithITProductComboToDto(Product product) {
         ProductWithITProductComboDTO productDTO = new ProductWithITProductComboDTO();
 
@@ -163,7 +192,9 @@ public class EntityDtoMapper {
 
         return productDTO;
     }
+    //-----------------------------------------------------------------------------/
 
+    //-------------------------------- COMBO ------------------------------------/
     //Metodo para convertir Combo a ComboDTO
     public ComboDTO convertComboToDto(Combo combo) {
         ComboDTO comboDTO = new ComboDTO();

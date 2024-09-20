@@ -36,6 +36,20 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("categoryWithSubcategories/{id}")
+    public ResponseEntity<?> getCategoriesIdWithSubcategories(@PathVariable long id){
+        try{
+            if (categoryService.getCategoriesIdWithSubcategories(id) == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Category with ID "+id+" not found");
+            }
+            return ResponseEntity.ok(categoryService.getCategoriesIdWithSubcategories(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the categories:"+e.getMessage());
+        }
+    }
+
     @PostMapping("category")
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         try{

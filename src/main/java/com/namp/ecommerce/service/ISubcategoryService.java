@@ -12,6 +12,7 @@ import java.util.List;
 public interface ISubcategoryService {
     List<SubcategoryDTO> getSubcategories();
     List<SubcategoryWithProductsDTO> getSubcategoriesWithProducts();
+    SubcategoryWithProductsDTO getSubcategoriesIdWithProducts(long id);
     SubcategoryDTO save(SubcategoryDTO subcategoryDTO);
     SubcategoryDTO update(SubcategoryDTO existingSubcategoryDTO, Subcategory subcategory);
     void delete(SubcategoryDTO subcategoryDTO);

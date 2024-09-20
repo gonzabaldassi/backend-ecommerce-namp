@@ -36,6 +36,20 @@ public class SubcategoryController {
         }
     }
 
+    @GetMapping("subcategoryWithProducts/{id}")
+    public ResponseEntity<?> getSubcategoriesIdWithProducts(@PathVariable long id){
+        try{
+            if (subcategoryService.getSubcategoriesIdWithProducts(id) == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Subcategory with ID "+id+" not found");
+            }
+            return ResponseEntity.ok(subcategoryService.getSubcategoriesWithProducts());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the subcategories:"+e.getMessage());
+        }
+    }
+
     @PostMapping("subcategory")
     public ResponseEntity<?> createSubcategory(@Valid @RequestBody SubcategoryDTO subcategoryDTO) {
         try{

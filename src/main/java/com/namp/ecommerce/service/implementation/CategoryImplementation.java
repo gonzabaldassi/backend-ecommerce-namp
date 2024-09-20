@@ -2,7 +2,6 @@ package com.namp.ecommerce.service.implementation;
 
 import com.namp.ecommerce.dto.CategoryDTO;
 import com.namp.ecommerce.dto.CategoryWithSubcategoriesDTO;
-import com.namp.ecommerce.dto.SubcategoryDTO;
 import com.namp.ecommerce.mapper.EntityDtoMapper;
 import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.repository.ICategoryDAO;
@@ -36,6 +35,16 @@ public class CategoryImplementation implements ICategoryService {
                 .stream()
                 .map(entityDtoMapper::convertCategoryWithSubcategoryToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoryWithSubcategoriesDTO getCategoriesIdWithSubcategories(long id){
+        Category category = categoryDAO.findById(id);
+
+        if (category == null){
+            return null;
+        }
+        return entityDtoMapper.convertCategoryIdWithSubcategoryToDto(category);
     }
 
     @Override
