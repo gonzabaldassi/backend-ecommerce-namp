@@ -30,6 +30,16 @@ public class ProductController {
         }
     }
 
+    @GetMapping("productWithProductCombo")
+    public ResponseEntity<?> getProductWithProductCombo(){
+        try{
+            return ResponseEntity.ok(productService.getCombosWithProductCombos());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the categories:"+e.getMessage());
+        }
+    }
+
     @PostMapping("product")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{

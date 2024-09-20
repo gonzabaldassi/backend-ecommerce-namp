@@ -9,9 +9,10 @@ import java.util.List;
 public interface IComboService {
     List<ComboDTO> getCombos();
     List<ComboWithITProductComboDTO> getCombosWithITProductCombos();
-    Combo save(Combo combo);
-    ///Combo update(Combo combo);
-    void delete(Combo combo);
+    ComboDTO save(ComboDTO comboDTO);
+    ComboDTO update(ComboDTO existingCombo, Combo combo);
+    void delete(ComboDTO comboDTO);
+    ComboDTO findById(long id);
     boolean verifyName(String normalizedName);
     boolean verifyName(String normalizedName, long idProduct);
 }

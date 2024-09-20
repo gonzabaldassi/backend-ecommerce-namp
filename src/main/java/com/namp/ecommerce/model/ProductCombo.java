@@ -28,7 +28,7 @@ public class ProductCombo implements Serializable{
 
     @NotNull(message = "La cantidad no debe de estar vacia")
     @Min(value = 0, message = "El valor debe ser un número positivo")
-    private int cant;
+    private int quantity;
 
     @ManyToOne
     @JoinColumn(name = "fk_product", referencedColumnName = "idProduct")

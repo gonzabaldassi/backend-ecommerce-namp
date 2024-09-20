@@ -6,5 +6,5 @@ import lombok.Data;
 public class ProductComboDTO {
     private long idProductCombo;
     private long idProduct;
-    private int cant;
+    private int quantity;
 }

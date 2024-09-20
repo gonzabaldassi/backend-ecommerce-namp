@@ -62,6 +62,18 @@ public class EntityDtoMapper {
         return product;
     }
 
+    //Metodo para comvertir de ComboDTO a Combo 
+
+    public Combo convertDtoToCombo(ComboDTO comboDTO){
+        Combo combo = new Combo();
+        
+        combo.setName(comboDTO.getName());
+        combo.setDescription(comboDTO.getDescription());
+        combo.setPrice(comboDTO.getPrice());
+        
+        return combo; 
+    }
+
 
     /*
     /---------------------------------------------------------------------------/
@@ -198,7 +210,7 @@ public class EntityDtoMapper {
         ProductComboDTO productComboDTO = new ProductComboDTO();
 
         productComboDTO.setIdProductCombo(productCombo.getIdProductCombo());
-        productComboDTO.setCant(productCombo.getCant());
+        productComboDTO.setQuantity(productCombo.getQuantity());
 
         return productComboDTO;
     }
