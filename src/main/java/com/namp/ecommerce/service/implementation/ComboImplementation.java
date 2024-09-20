@@ -1,5 +1,6 @@
 package com.namp.ecommerce.service.implementation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,12 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.namp.ecommerce.dto.ComboDTO;
-import com.namp.ecommerce.dto.ComboWithITProductComboDTO;
+import com.namp.ecommerce.dto.ComboWithProductComboDTO;
+import com.namp.ecommerce.dto.ProductComboDTO;
+import com.namp.ecommerce.dto.ProductWithProductComboDTO;
 import com.namp.ecommerce.mapper.EntityDtoMapper;
 import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.model.Combo;
+import com.namp.ecommerce.model.Product;
+import com.namp.ecommerce.model.ProductCombo;
 import com.namp.ecommerce.repository.ICategoryDAO;
 import com.namp.ecommerce.repository.IComboDAO;
+import com.namp.ecommerce.repository.IProductComboDAO;
+import com.namp.ecommerce.repository.IProductDAO;
 import com.namp.ecommerce.service.IComboService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +33,12 @@ public class ComboImplementation implements IComboService{
     @Autowired
     private EntityDtoMapper entityDtoMapper;
 
+    @Autowired
+    private IProductDAO productDAO; 
+
+    @Autowired
+    private IProductComboDAO productComboDAO; 
+
     @Override
     public List<ComboDTO> getCombos() {
                 return comboDAO.findAll()
@@ -35,7 +48,7 @@ public class ComboImplementation implements IComboService{
     }
 
     @Override
-    public List<ComboWithITProductComboDTO> getCombosWithITProductCombos() {
+    public List<ComboWithProductComboDTO> getCombosWithITProductCombos() {
         return comboDAO.findAll()
         .stream()
         .map(entityDtoMapper::convertComboWithITProductComboToDto)
@@ -43,19 +56,72 @@ public class ComboImplementation implements IComboService{
     }
 
     @Override
-    public ComboDTO save(ComboDTO comboDTO) {
+    public ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO, ComboDTO comboDTO) {
         String normalizedName = comboDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
         if(!verifyName(normalizedName)) {
             comboDTO.setName(normalizedName);
 
+           // Convertir ComboDTO a entidad Combo
             Combo combo = entityDtoMapper.convertDtoToCombo(comboDTO);
 
+            // Guardar el combo en la base de datos
             Combo savedCombo = comboDAO.save(combo);
 
+            for (ProductComboDTO productComboDTO : comboWithProductComboDTO.getProductCombo() ) {
+                ProductCombo productCombo = new ProductCombo();
+    
+                // Asignar el combo y el producto
+                productCombo.setIdCombo(savedCombo);
+                productCombo.setIdProduct(productDAO.findById(productComboDTO.getIdProduct().getIdProduct()));
+    
+                // Asignar la cantidad del producto en el combo
+                productCombo.setQuantity(productComboDTO.getQuantity());
+    
+                // Guardar la relación en la tabla intermedia
+                productComboDAO.save(productCombo);
+            }
+
+            // Retornar el ComboDTO del combo guardado
             return entityDtoMapper.convertComboToDto(savedCombo);
         }
-        return null;    }
+        return null;    
+    }
+
+    // @Override
+    // public ComboDTO save(ComboDTO comboDTO, List<ProductComboDTO> productComboDTOs) {
+    //     // Convertir ComboDTO a entidad Combo
+    //     Combo combo = entityDtoMapper.convertDtoToCombo(comboDTO);
+
+    //     // Guardar el combo en la base de datos
+    //     Combo savedCombo = comboDAO.save(combo);
+
+    //     // Iterar sobre los productos del combo (ProductComboDTO)
+    //     for (ProductComboDTO productComboDTO : productComboDTOs) {
+
+    //         // Asociar el combo recién guardado al ProductComboDTO
+    //         productComboDTO.setIdCombo(entityDtoMapper.convertComboToDto(savedCombo));
+
+    //         // Buscar el producto por su ID (opcional, si no lo haces en el mapper)
+    //         Product product = productDAO.findById(productComboDTO.getIdProduct().getIdProduct());
+
+    //         // Asignar el producto al ProductComboDTO
+    //         productComboDTO.setIdProduct(entityDtoMapper.convertProductToDto(product));
+
+    //         // Convertir el DTO a la entidad ProductCombo
+    //         ProductCombo productCombo = entityDtoMapper.convertDtoToProductCombo(productComboDTO);
+
+    //         // Asignar la cantidad desde ProductComboDTO a ProductCombo
+    //         productCombo.setQuantity(productComboDTO.getQuantity());
+
+    //         // Guardar cada relación producto-combo en la tabla intermedia
+    //         productComboDAO.save(productCombo);
+    //     }
+
+    //     // Retornar el ComboDTO del combo guardado
+    //     return entityDtoMapper.convertComboToDto(savedCombo);
+    // }
+    
 
     @Override
     public ComboDTO update(ComboDTO existingComboDTO, Combo combo) {

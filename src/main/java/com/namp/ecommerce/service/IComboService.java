@@ -1,15 +1,16 @@
 package com.namp.ecommerce.service;
 
 import com.namp.ecommerce.dto.ComboDTO;
-import com.namp.ecommerce.dto.ComboWithITProductComboDTO;
+import com.namp.ecommerce.dto.ComboWithProductComboDTO;
+import com.namp.ecommerce.dto.ProductComboDTO;
 import com.namp.ecommerce.model.Combo;
 
 import java.util.List;
 
 public interface IComboService {
     List<ComboDTO> getCombos();
-    List<ComboWithITProductComboDTO> getCombosWithITProductCombos();
-    ComboDTO save(ComboDTO comboDTO);
+    List<ComboWithProductComboDTO> getCombosWithITProductCombos();
+    ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO, ComboDTO comboDTO);
     ComboDTO update(ComboDTO existingCombo, Combo combo);
     void delete(ComboDTO comboDTO);
     ComboDTO findById(long id);

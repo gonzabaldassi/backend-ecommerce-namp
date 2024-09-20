@@ -1,7 +1,7 @@
 package com.namp.ecommerce.service.implementation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.namp.ecommerce.dto.ProductDTO;
-import com.namp.ecommerce.dto.ProductWithITProductComboDTO;
+import com.namp.ecommerce.dto.ProductWithProductComboDTO;
 import com.namp.ecommerce.mapper.EntityDtoMapper;
 import com.namp.ecommerce.model.Product;
 import com.namp.ecommerce.repository.IProductDAO;
@@ -217,7 +217,7 @@ public class ProductImplementation implements IProductService{
     }
 
     @Override
-    public List<ProductWithITProductComboDTO> getCombosWithProductCombos() {
+    public List<ProductWithProductComboDTO> getCombosWithProductCombos() {
         return productDAO.findAll()
         .stream()
         .map(entityDtoMapper::convertProductWithITProductComboToDto)

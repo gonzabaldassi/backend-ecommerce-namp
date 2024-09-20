@@ -8,4 +8,5 @@ public interface IProductDAO extends CrudRepository<Product, Long> {
     List<Product> findAll();
     Product findByName(String name);
     Product findByIdProduct(long id);
+    Product findById(long id); 
 }

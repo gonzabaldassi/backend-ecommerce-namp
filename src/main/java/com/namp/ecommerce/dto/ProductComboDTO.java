@@ -5,6 +5,10 @@ import lombok.Data;
 @Data
 public class ProductComboDTO {
     private long idProductCombo;
-    private long idProduct;
+    private ProductDTO idProduct;
+    private ComboDTO idCombo; 
     private int quantity;
+
+
+
 }

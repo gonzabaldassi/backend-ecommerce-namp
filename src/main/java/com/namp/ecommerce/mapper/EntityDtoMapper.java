@@ -4,6 +4,9 @@ package com.namp.ecommerce.mapper;
 import com.namp.ecommerce.dto.*;
 import com.namp.ecommerce.model.*;
 import com.namp.ecommerce.repository.ICategoryDAO;
+import com.namp.ecommerce.repository.IComboDAO;
+import com.namp.ecommerce.repository.IProductComboDAO;
+import com.namp.ecommerce.repository.IProductDAO;
 import com.namp.ecommerce.repository.ISubcategoryDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,12 @@ public class EntityDtoMapper {
 
     @Autowired
     private ICategoryDAO categoryDAO;
+
+    @Autowired
+    private IComboDAO comboDAO;
+
+    @Autowired
+    private IProductDAO productDAO;
 
 
     /*
@@ -72,6 +81,17 @@ public class EntityDtoMapper {
         combo.setPrice(comboDTO.getPrice());
         
         return combo; 
+    }
+
+    // Metodo para convertir de ProductComboDTO a ProductCombo
+    public ProductCombo convertDtoToProductCombo(ProductComboDTO productComboDTO){
+        ProductCombo productCombo = new ProductCombo();
+        
+        productCombo.setIdCombo(comboDAO.findById(productComboDTO.getIdCombo().getIdCombo()));
+        productCombo.setIdProduct(productDAO.findById(productComboDTO.getIdProduct().getIdProduct()));
+        productCombo.setQuantity(productComboDTO.getQuantity());
+        
+        return productCombo;
     }
 
 
@@ -158,8 +178,8 @@ public class EntityDtoMapper {
     }
 
     //Metodo para convertir Product a ProductWithITProductComboDTO
-    public ProductWithITProductComboDTO convertProductWithITProductComboToDto(Product product) {
-        ProductWithITProductComboDTO productDTO = new ProductWithITProductComboDTO();
+    public ProductWithProductComboDTO convertProductWithITProductComboToDto(Product product) {
+        ProductWithProductComboDTO productDTO = new ProductWithProductComboDTO();
 
         productDTO.setIdProduct(product.getIdProduct());
         productDTO.setName(product.getName());
@@ -189,8 +209,8 @@ public class EntityDtoMapper {
     }
 
     //Metodo para convertir Combo a ComboWithITProductComboDTO
-    public ComboWithITProductComboDTO convertComboWithITProductComboToDto(Combo combo) {
-        ComboWithITProductComboDTO comboWithITProductComboDTO = new ComboWithITProductComboDTO();
+    public ComboWithProductComboDTO convertComboWithITProductComboToDto(Combo combo) {
+        ComboWithProductComboDTO comboWithITProductComboDTO = new ComboWithProductComboDTO();
 
         comboWithITProductComboDTO.setIdCombo(combo.getIdCombo());
         comboWithITProductComboDTO.setName(combo.getName());

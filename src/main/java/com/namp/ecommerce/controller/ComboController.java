@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.namp.ecommerce.dto.ComboDTO;
+import com.namp.ecommerce.dto.ComboWithProductComboDTO;
 import com.namp.ecommerce.model.Combo;
 import com.namp.ecommerce.service.IComboService;
 
@@ -41,9 +42,9 @@ public class ComboController {
     }
 
     @PostMapping("combo")
-    public ResponseEntity<?> createCombo(@Valid @RequestBody ComboDTO comboDTO){
+    public ResponseEntity<?> createCombo(@Valid @RequestBody ComboDTO comboDTO, ComboWithProductComboDTO comboWithProductComboDTO){
         try{
-            ComboDTO createdComboDTO = comboService.save(comboDTO);
+            ComboDTO createdComboDTO = comboService.save(comboWithProductComboDTO, comboDTO);
 
             if (createdComboDTO == null){
                 return ResponseEntity.status(HttpStatus.CONFLICT)
