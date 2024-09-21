@@ -56,35 +56,46 @@ public class ComboImplementation implements IComboService{
     }
 
     @Override
-    public ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO, ComboDTO comboDTO) {
-        String normalizedName = comboDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+    public ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO) {
+    String normalizedName = comboWithProductComboDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
+    if (!verifyName(normalizedName)) {
+        comboWithProductComboDTO.setName(normalizedName);
 
-        if(!verifyName(normalizedName)) {
-            comboDTO.setName(normalizedName);
+        // Convertir ComboWithProductComboDTO a entidad Combo
+        Combo combo = entityDtoMapper.convertComboWithProductComboDTOToCombo(comboWithProductComboDTO);
 
-           // Convertir ComboDTO a entidad Combo
-            Combo combo = entityDtoMapper.convertDtoToCombo(comboDTO);
+        // Guardar el combo en la base de datos
+        Combo savedCombo = comboDAO.save(combo);
 
-            // Guardar el combo en la base de datos
-            Combo savedCombo = comboDAO.save(combo);
+        // Verificar si la lista de Porductos es Nula o Vacia 
+        if (comboWithProductComboDTO.getProductCombo() == null || comboWithProductComboDTO.getProductCombo().isEmpty()) {
+            throw new IllegalArgumentException("La lista de productos en el combo es null o está vacía.");
+        }
 
-            for (ProductComboDTO productComboDTO : comboWithProductComboDTO.getProductCombo() ) {
-                ProductCombo productCombo = new ProductCombo();
-    
-                // Asignar el combo y el producto
-                productCombo.setIdCombo(savedCombo);
-                productCombo.setIdProduct(productDAO.findById(productComboDTO.getIdProduct().getIdProduct()));
-    
-                // Asignar la cantidad del producto en el combo
-                productCombo.setQuantity(productComboDTO.getQuantity());
-    
-                // Guardar la relación en la tabla intermedia
-                productComboDAO.save(productCombo);
+        // Guardar los productos asociados en la tabla intermedia (ProductCombo)
+        for (ProductComboDTO productComboDTO : comboWithProductComboDTO.getProductCombo()) {
+            ProductCombo productCombo = new ProductCombo();
+
+            // Obtener el producto desde el DAO
+            Product product = productDAO.findById(productComboDTO.getIdProduct().getIdProduct());
+            if (product == null) {
+                throw new EntityNotFoundException("Producto no encontrado con el ID: " + productComboDTO.getIdProduct().getIdProduct());
             }
 
-            // Retornar el ComboDTO del combo guardado
-            return entityDtoMapper.convertComboToDto(savedCombo);
+            // Asignar el combo y el producto en la entidad ProductCombo
+            productCombo.setIdCombo(savedCombo);
+            productCombo.setIdProduct(product);
+
+            // Asignar la cantidad de producto en el combo
+            productCombo.setQuantity(productComboDTO.getQuantity());
+
+            // Guardar la relación en la tabla intermedia
+            productComboDAO.save(productCombo);
         }
+
+        // Retornar el ComboDTO del combo guardado
+        return entityDtoMapper.convertComboToDto(savedCombo);
+    }
         return null;    
     }
 

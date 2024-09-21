@@ -10,7 +10,7 @@ import java.util.List;
 public interface IComboService {
     List<ComboDTO> getCombos();
     List<ComboWithProductComboDTO> getCombosWithITProductCombos();
-    ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO, ComboDTO comboDTO);
+    ComboDTO save(ComboWithProductComboDTO comboWithProductComboDTO);
     ComboDTO update(ComboDTO existingCombo, Combo combo);
     void delete(ComboDTO comboDTO);
     ComboDTO findById(long id);

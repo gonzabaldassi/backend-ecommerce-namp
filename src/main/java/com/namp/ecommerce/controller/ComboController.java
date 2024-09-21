@@ -42,18 +42,18 @@ public class ComboController {
     }
 
     @PostMapping("combo")
-    public ResponseEntity<?> createCombo(@Valid @RequestBody ComboDTO comboDTO, ComboWithProductComboDTO comboWithProductComboDTO){
-        try{
-            ComboDTO createdComboDTO = comboService.save(comboWithProductComboDTO, comboDTO);
-
-            if (createdComboDTO == null){
+    public ResponseEntity<?> createCombo(@Valid @RequestBody ComboWithProductComboDTO comboWithProductComboDTO) {
+        try {
+            ComboDTO createdComboDTO = comboService.save(comboWithProductComboDTO);
+    
+            if (createdComboDTO == null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Este combo ya se encuentra registrado");
             }
-
+    
             return ResponseEntity.ok(createdComboDTO);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el combo:"+e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el combo: " + e.getMessage());
         }
     }
 
