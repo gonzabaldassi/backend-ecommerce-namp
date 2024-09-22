@@ -12,4 +12,5 @@ public class CategoryWithSubcategoriesDTO {
     private String description;
 
     private List<SubcategoryDTO> subcategories;
+    private List<SubcategoryWithProductsDTO> subcategoryWithProducts;
 }

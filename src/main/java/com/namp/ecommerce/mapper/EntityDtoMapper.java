@@ -104,6 +104,11 @@ public class EntityDtoMapper {
                 .map(this::convertSubcategoryToDto)
                 .collect(Collectors.toList()));
 
+        categoryIdWithSubcategoryDTO.setSubcategoryWithProducts(category.getSubcategories()
+                .stream()
+                .map(this::convertSubcategoryWithProductsToDto)
+                .collect(Collectors.toList()));
+
         return categoryIdWithSubcategoryDTO;
     }
     //-----------------------------------------------------------------------------/
