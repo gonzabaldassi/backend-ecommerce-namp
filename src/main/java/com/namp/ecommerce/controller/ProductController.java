@@ -39,6 +39,20 @@ public class ProductController {
         }
     }
 
+    @GetMapping("product/{id}")
+    public ResponseEntity<?> getProductsId(@PathVariable long id){
+        try{
+            if (productService.getProductsId(id) == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Category with ID "+id+" not found");
+            }
+            return ResponseEntity.ok(productService.getProductsId(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error showing the categories:"+e.getMessage());
+        }
+    }
+
     @PostMapping("product")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{

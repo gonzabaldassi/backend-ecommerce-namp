@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IProductService {
     List<ProductDTO> getProducts();
     List<ProductWithItDTO> getProductsWithIt();
+    ProductDTO getProductsId(long id);
     ProductDTO save(String product, MultipartFile file) throws IOException;
     ProductDTO update(ProductDTO existingProductDTO, String product, MultipartFile file) throws IOException;
     void delete(ProductDTO productDTO);

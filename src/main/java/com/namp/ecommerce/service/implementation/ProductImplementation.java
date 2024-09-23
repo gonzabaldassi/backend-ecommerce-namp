@@ -17,6 +17,7 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -55,6 +56,16 @@ public class ProductImplementation implements IProductService{
                 .stream()
                 .map(mapperProduct::convertProductWithItToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductDTO getProductsId(long id){
+        Product product = productDAO.findByIdProduct(id);
+
+        if (product == null){
+            return null;
+        }
+        return mapperProduct.convertProductToDto(product);
     }
 
     @Override
