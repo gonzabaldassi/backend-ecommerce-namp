@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,9 @@ public class Combo implements Serializable {
 
     @OneToMany(mappedBy = "idCombo")
     private List<ProductCombo> productCombo = new ArrayList<>();
+
+    @Value("${image.upload.dir}")
+    private String img;
 }
 
 

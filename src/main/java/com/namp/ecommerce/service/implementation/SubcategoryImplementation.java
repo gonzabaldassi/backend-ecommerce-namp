@@ -2,8 +2,7 @@ package com.namp.ecommerce.service.implementation;
 
 import com.namp.ecommerce.dto.SubcategoryDTO;
 import com.namp.ecommerce.dto.SubcategoryWithProductsDTO;
-import com.namp.ecommerce.mapper.EntityDtoMapper;
-import com.namp.ecommerce.model.Category;
+import com.namp.ecommerce.mapper.MapperSubcategory;
 import com.namp.ecommerce.model.Subcategory;
 import com.namp.ecommerce.repository.ISubcategoryDAO;
 import com.namp.ecommerce.service.ISubcategoryService;
@@ -21,13 +20,13 @@ public class SubcategoryImplementation implements ISubcategoryService {
     private ISubcategoryDAO subcategoryDAO;
 
     @Autowired
-    private EntityDtoMapper entityDtoMapper;
+    private MapperSubcategory mapperSubcategory;
 
     @Override
     public List<SubcategoryDTO> getSubcategories(){
         return subcategoryDAO.findAll()
                 .stream()
-                .map(entityDtoMapper::convertSubcategoryToDto)
+                .map(mapperSubcategory::convertSubcategoryToDto)
                 .collect(Collectors.toList());
     }
 
@@ -35,18 +34,18 @@ public class SubcategoryImplementation implements ISubcategoryService {
     public List<SubcategoryWithProductsDTO> getSubcategoriesWithProducts(){
         return subcategoryDAO.findAll()
                 .stream()
-                .map(entityDtoMapper::convertSubcategoryWithProductsToDto)
+                .map(mapperSubcategory::convertSubcategoryWithProductsToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public SubcategoryWithProductsDTO getSubcategoriesIdWithProducts(long id){
-        Subcategory subcategory = subcategoryDAO.findById(id);
+        Subcategory subcategory = subcategoryDAO.findByIdSubcategory(id);
 
         if (subcategory == null){
             return  null;
         }
-        return entityDtoMapper.convertSubcategoryIdWithProductsToDto(subcategory);
+        return mapperSubcategory.convertSubcategoryIdWithProductsToDto(subcategory);
     }
 
 
@@ -58,11 +57,11 @@ public class SubcategoryImplementation implements ISubcategoryService {
         if(!verifyName(normalizedName)) {
             subcategoryDTO.setName(normalizedName);
 
-            Subcategory subcategory = entityDtoMapper.convertDtoToSubcategory(subcategoryDTO);
+            Subcategory subcategory = mapperSubcategory.convertDtoToSubcategory(subcategoryDTO);
 
             Subcategory savedSubcategory = subcategoryDAO.save(subcategory);
 
-            return entityDtoMapper.convertSubcategoryToDto(savedSubcategory);
+            return mapperSubcategory.convertSubcategoryToDto(savedSubcategory);
         }
         return null;
 
@@ -94,7 +93,7 @@ public class SubcategoryImplementation implements ISubcategoryService {
         Subcategory updatedSubcategory = subcategoryDAO.save(existingSubcategory);
 
         //Devolvemos el DTO de la subcategoria actualizada
-        return entityDtoMapper.convertSubcategoryToDto(updatedSubcategory);
+        return mapperSubcategory.convertSubcategoryToDto(updatedSubcategory);
     }
 
     @Override
@@ -108,10 +107,11 @@ public class SubcategoryImplementation implements ISubcategoryService {
 
     public SubcategoryDTO findById(long id) {
         Subcategory subcategory = subcategoryDAO.findByIdSubcategory(id);
-        if (subcategory != null) {
-            return entityDtoMapper.convertSubcategoryToDto(subcategory);
-        }
-        return null;
+        if (subcategory == null) {
+            return null;
+            }
+        return mapperSubcategory.convertSubcategoryToDto(subcategory);
+
     }
 
     @Override

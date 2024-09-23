@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ProductWithITProductComboDTO {
+public class ProductWithItDTO {
     private long idProduct;
     private String name;
     private String description;

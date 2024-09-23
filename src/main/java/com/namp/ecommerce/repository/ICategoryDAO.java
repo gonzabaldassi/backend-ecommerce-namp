@@ -8,5 +8,4 @@ import java.util.List;
 public interface ICategoryDAO extends CrudRepository<Category, Long> {
     List<Category> findAll();
     Category findByIdCategory(long id);
-    Category findById(long id);
 }

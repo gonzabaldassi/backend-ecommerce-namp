@@ -1,7 +1,8 @@
 package com.namp.ecommerce.service.implementation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.namp.ecommerce.dto.ProductDTO;
-import com.namp.ecommerce.mapper.EntityDtoMapper;
+import com.namp.ecommerce.dto.ProductWithItDTO;
+import com.namp.ecommerce.mapper.MapperProduct;
 import com.namp.ecommerce.model.Product;
 import com.namp.ecommerce.repository.IProductDAO;
 import com.namp.ecommerce.repository.ISubcategoryDAO;
@@ -35,7 +36,7 @@ public class ProductImplementation implements IProductService{
     private ISubcategoryDAO subcategoryDAO;
 
     @Autowired
-    private EntityDtoMapper entityDtoMapper;
+    private MapperProduct mapperProduct;
 
     @Value("${image.upload.dir}")
     private String uploadDir;
@@ -44,7 +45,15 @@ public class ProductImplementation implements IProductService{
     public List<ProductDTO> getProducts() {
         return productDAO.findAll()
                 .stream()
-                .map(entityDtoMapper::convertProductToDto)
+                .map(mapperProduct::convertProductToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductWithItDTO> getProductsWithIt() {
+        return productDAO.findAll()
+                .stream()
+                .map(mapperProduct::convertProductWithItToDto)
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +95,7 @@ public class ProductImplementation implements IProductService{
         if(!verifyName(normalizedName)) {
             productDTO.setName(normalizedName);
 
-            Product product = entityDtoMapper.convertDtoToProduct(productDTO);
+            Product product = mapperProduct.convertDtoToProduct(productDTO);
 
             Product savedProduct = productDAO.save(product);
 
@@ -94,7 +103,7 @@ public class ProductImplementation implements IProductService{
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
 
-            return entityDtoMapper.convertProductToDto(savedProduct);
+            return mapperProduct.convertProductToDto(savedProduct);
         }
         return null;
     }
@@ -104,6 +113,9 @@ public class ProductImplementation implements IProductService{
         Path filePath = null;
 
         Product existingProduct = productDAO.findByIdProduct(existingProductDTO.getIdProduct());
+        if (existingProduct == null){
+            return null;
+        }
 
         // Convierto json a objeto
         ObjectMapper objectMapper = new ObjectMapper();
@@ -123,7 +135,7 @@ public class ProductImplementation implements IProductService{
         existingProduct.setPrice(productDTO.getPrice());
         existingProduct.setStock(productDTO.getStock());
         //Buscamos la instancia de subcategoria en base a la subcategoriaDTO que esta setteada en el productoDTO existente
-        existingProduct.setIdSubcategory(subcategoryDAO.findById(existingProductDTO.getIdSubcategory().getIdSubcategory()));
+        existingProduct.setIdSubcategory(subcategoryDAO.findByIdSubcategory(existingProductDTO.getIdSubcategory().getIdSubcategory()));
 
         //Hago la verificacion de imagen
         if (file != null && !file.isEmpty()){
@@ -152,7 +164,7 @@ public class ProductImplementation implements IProductService{
         Product updatedProduct = productDAO.save(existingProduct);
 
         //Devolvemos el DTO del producto actualizado
-        return entityDtoMapper.convertProductToDto(updatedProduct);
+        return mapperProduct.convertProductToDto(updatedProduct);
     }
 
     @Override
@@ -180,7 +192,7 @@ public class ProductImplementation implements IProductService{
     public ProductDTO findById(long id) {
         Product product = productDAO.findByIdProduct(id);
         if (product != null){
-            return entityDtoMapper.convertProductToDto(product);
+            return mapperProduct.convertProductToDto(product);
         }
         return null;
     }

@@ -2,7 +2,7 @@ package com.namp.ecommerce.service.implementation;
 
 import com.namp.ecommerce.dto.CategoryDTO;
 import com.namp.ecommerce.dto.CategoryWithSubcategoriesDTO;
-import com.namp.ecommerce.mapper.EntityDtoMapper;
+import com.namp.ecommerce.mapper.MapperCategory;
 import com.namp.ecommerce.model.Category;
 import com.namp.ecommerce.repository.ICategoryDAO;
 import com.namp.ecommerce.service.ICategoryService;
@@ -19,13 +19,13 @@ public class CategoryImplementation implements ICategoryService {
     private ICategoryDAO categoryDAO;
 
     @Autowired
-    private EntityDtoMapper entityDtoMapper;
+    private MapperCategory mapperCategory;
 
     @Override
     public List<CategoryDTO> getCategories(){
         return categoryDAO.findAll()
                 .stream()
-                .map(entityDtoMapper::convertCategoryToDto)
+                .map(mapperCategory::convertCategoryToDto)
                 .collect(Collectors.toList());
     }
 
@@ -33,18 +33,18 @@ public class CategoryImplementation implements ICategoryService {
     public List<CategoryWithSubcategoriesDTO> getCategoriesWithSubcategories(){
         return categoryDAO.findAll()
                 .stream()
-                .map(entityDtoMapper::convertCategoryWithSubcategoryToDto)
+                .map(mapperCategory::convertCategoryWithSubcategoryToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CategoryWithSubcategoriesDTO getCategoriesIdWithSubcategories(long id){
-        Category category = categoryDAO.findById(id);
+        Category category = categoryDAO.findByIdCategory(id);
 
         if (category == null){
             return null;
         }
-        return entityDtoMapper.convertCategoryIdWithSubcategoryToDto(category);
+        return mapperCategory.convertCategoryIdWithSubcategoryToDto(category);
     }
 
     @Override
@@ -55,11 +55,11 @@ public class CategoryImplementation implements ICategoryService {
         if(!verifyName(normalizedName)) {
             categoryDTO.setName(normalizedName);
 
-            Category category = entityDtoMapper.convertDtoToCategory(categoryDTO);
+            Category category = mapperCategory.convertDtoToCategory(categoryDTO);
 
             Category savedCategory = categoryDAO.save(category);
 
-            return entityDtoMapper.convertCategoryToDto(savedCategory);
+            return mapperCategory.convertCategoryToDto(savedCategory);
         }
         return null;
     }
@@ -88,7 +88,7 @@ public class CategoryImplementation implements ICategoryService {
         Category updatedCategory = categoryDAO.save(existingCategory);
 
         //Devolvemos el DTO de la categoria actualizada
-        return entityDtoMapper.convertCategoryToDto(updatedCategory);
+        return mapperCategory.convertCategoryToDto(updatedCategory);
     }
 
     @Override
@@ -103,10 +103,10 @@ public class CategoryImplementation implements ICategoryService {
     @Override
     public CategoryDTO findById(long id) {
         Category category = categoryDAO.findByIdCategory(id);
-        if (category != null) {
-            return entityDtoMapper.convertCategoryToDto(category);
+        if (category == null) {
+            return null;
         }
-        return null;
+        return mapperCategory.convertCategoryToDto(category);
     }
 
     @Override

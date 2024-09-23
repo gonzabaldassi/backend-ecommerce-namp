@@ -5,11 +5,12 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ComboWithITProductComboDTO {
+public class ComboWithItDTO {
 
     private long idCombo;
     private String name;
     private String description;
+    private String img;
 
     private double price;
 

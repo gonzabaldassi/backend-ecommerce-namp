@@ -1,72 +1,25 @@
-package com.namp.ecommerce.mapper;
+/*
+    The only objective of this MapperUtil is to agrupate all methods that are needed in two or more mappers at the
+    same time, to avoid circular dependencies. -Jeremias Antunez
+*/
 
+
+package com.namp.ecommerce.mapper;
 
 import com.namp.ecommerce.dto.*;
 import com.namp.ecommerce.model.*;
-import com.namp.ecommerce.repository.ICategoryDAO;
-import com.namp.ecommerce.repository.ISubcategoryDAO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 @Component
-public class EntityDtoMapper {
-
-    @Autowired
-    private ISubcategoryDAO subcategoryDAO;
-
-    @Autowired
-    private ICategoryDAO categoryDAO;
-
+public class MapperUtil {
 
     /*
-    /---------------------------------------------------------------------------/
-    /--------------------DTOs To Real Instances---------------------------------/
-    /---------------------------------------------------------------------------/
-    */
-
-
-    //Metodo para convertir de CategoryDTO a Category
-    public Category convertDtoToCategory(CategoryDTO categoryDTO) {
-        Category category = new Category();
-
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
-
-        return category;
-    }
-
-    //Metodo para convertir de SubcategoryDTO a Subcategory
-    public Subcategory convertDtoToSubcategory(SubcategoryDTO subcategoryDTO) {
-        Subcategory subcategory = new Subcategory();
-
-        subcategory.setName(subcategoryDTO.getName());
-        subcategory.setDescription(subcategoryDTO.getDescription());
-        subcategory.setIdCategory(categoryDAO.findById(subcategoryDTO.getIdCategory().getIdCategory()));
-
-        return subcategory;
-    }
-
-    //Metodo para convertir de ProductDTO a Product
-    public Product convertDtoToProduct(ProductDTO productDTO) {
-        Product product = new Product();
-
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setPrice(productDTO.getPrice());
-        product.setStock(productDTO.getStock());
-        product.setImg(productDTO.getImg());
-        product.setIdSubcategory(subcategoryDAO.findById(productDTO.getIdSubcategory().getIdSubcategory()));
-
-        return product;
-    }
-
-
-
-
-    //-------------------------------- CATEGORY ------------------------------------/
-
+    ----------------------------------------------------------------------------------------------------------
+                                             CATEGORY METHODS
+   -----------------------------------------------------------------------------------------------------------
+     */
     public CategoryDTO convertCategoryToDto(Category category) {
         CategoryDTO categoryDTO = new CategoryDTO();
 
@@ -111,10 +64,12 @@ public class EntityDtoMapper {
 
         return categoryIdWithSubcategoryDTO;
     }
-    //-----------------------------------------------------------------------------/
 
-    //-------------------------------- SUBCATEGORY ------------------------------------/
-
+    /*
+    ----------------------------------------------------------------------------------------------------------
+                                            SUBCATEGORY METHODS
+   -----------------------------------------------------------------------------------------------------------
+     */
     public SubcategoryDTO convertSubcategoryToDto(Subcategory subcategory){
         SubcategoryDTO subcategoryDTO = new SubcategoryDTO();
 
@@ -159,11 +114,11 @@ public class EntityDtoMapper {
 
         return subcategoryIdWithProductsDTO;
     }
-
-    //-----------------------------------------------------------------------------/
-
-    //-------------------------------- PRODUCT ------------------------------------/
-
+    /*
+    ----------------------------------------------------------------------------------------------------------
+                                            PRODUCT METHODS
+   -----------------------------------------------------------------------------------------------------------
+    */
     public ProductDTO convertProductToDto(Product product) {
         ProductDTO productDTO = new ProductDTO();
 
@@ -173,15 +128,14 @@ public class EntityDtoMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setImg(product.getImg());
-        //NO SIRVE MAS
-        //productDTO.setSubcategoryName(product.getIdSubcategory().getName());
+
         productDTO.setIdSubcategory(this.convertSubcategoryToDto(product.getIdSubcategory()));
 
         return productDTO;
     }
 
-    public ProductWithITProductComboDTO convertProductWithITProductComboToDto(Product product) {
-        ProductWithITProductComboDTO productDTO = new ProductWithITProductComboDTO();
+    public ProductWithItDTO convertProductWithItToDto(Product product) {
+        ProductWithItDTO productDTO = new ProductWithItDTO();
 
         productDTO.setIdProduct(product.getIdProduct());
         productDTO.setName(product.getName());
@@ -197,10 +151,26 @@ public class EntityDtoMapper {
 
         return productDTO;
     }
-    //-----------------------------------------------------------------------------/
+    /*
+    ----------------------------------------------------------------------------------------------------------
+                                         PRODUCT COMBO METHODS
+   -----------------------------------------------------------------------------------------------------------
+    */
+    public ProductComboDTO convertProductComboToDto(ProductCombo productCombo) {
+        ProductComboDTO productComboDTO = new ProductComboDTO();
 
-    //-------------------------------- COMBO ------------------------------------/
-    //Metodo para convertir Combo a ComboDTO
+        productComboDTO.setIdProductCombo(productCombo.getIdProductCombo());
+        productComboDTO.setQuantity(productCombo.getQuantity());
+        productComboDTO.setIdProduct(this.convertProductToDto(productCombo.getIdProduct()));
+        productComboDTO.setIdCombo(this.convertComboToDto(productCombo.getIdCombo()));
+
+        return productComboDTO;
+    }
+    /*
+    ----------------------------------------------------------------------------------------------------------
+                                             COMBO METHODS
+   -----------------------------------------------------------------------------------------------------------
+    */
     public ComboDTO convertComboToDto(Combo combo) {
         ComboDTO comboDTO = new ComboDTO();
 
@@ -208,34 +178,25 @@ public class EntityDtoMapper {
         comboDTO.setName(combo.getName());
         comboDTO.setDescription(combo.getDescription());
         comboDTO.setPrice(combo.getPrice());
+        comboDTO.setImg(combo.getImg());
 
         return comboDTO;
     }
 
-    //Metodo para convertir Combo a ComboWithITProductComboDTO
-    public ComboWithITProductComboDTO convertComboWithITProductComboToDto(Combo combo) {
-        ComboWithITProductComboDTO comboWithITProductComboDTO = new ComboWithITProductComboDTO();
+    public ComboWithItDTO convertComboWithItToDto(Combo combo) {
+        ComboWithItDTO comboWithItDTO = new ComboWithItDTO();
 
-        comboWithITProductComboDTO.setIdCombo(combo.getIdCombo());
-        comboWithITProductComboDTO.setName(combo.getName());
-        comboWithITProductComboDTO.setDescription(combo.getDescription());
-        comboWithITProductComboDTO.setPrice(combo.getPrice());
+        comboWithItDTO.setIdCombo(combo.getIdCombo());
+        comboWithItDTO.setName(combo.getName());
+        comboWithItDTO.setDescription(combo.getDescription());
+        comboWithItDTO.setPrice(combo.getPrice());
+        comboWithItDTO.setImg(combo.getImg());
 
-        comboWithITProductComboDTO.setProductCombo(combo.getProductCombo()
+        comboWithItDTO.setProductCombo(combo.getProductCombo()
                 .stream()
                 .map(this::convertProductComboToDto)
                 .collect(Collectors.toList()));
 
-        return comboWithITProductComboDTO;
-    }
-
-    //Metodo para convertir ProductCombo a ProductComboDTO
-    public ProductComboDTO convertProductComboToDto(ProductCombo productCombo) {
-        ProductComboDTO productComboDTO = new ProductComboDTO();
-
-        productComboDTO.setIdProductCombo(productCombo.getIdProductCombo());
-        productComboDTO.setCant(productCombo.getCant());
-
-        return productComboDTO;
+        return comboWithItDTO;
     }
 }

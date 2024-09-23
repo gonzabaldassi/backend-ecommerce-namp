@@ -30,6 +30,15 @@ public class ProductController {
         }
     }
 
+    @GetMapping("productWithIt")
+    public ResponseEntity<?> getProductsWithIT(){
+        try{
+            return ResponseEntity.ok(productService.getProductsWithIt());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al mostrar los productos:"+e.getMessage());
+        }
+    }
+
     @PostMapping("product")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
         try{

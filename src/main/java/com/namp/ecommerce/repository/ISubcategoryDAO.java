@@ -8,5 +8,4 @@ public interface ISubcategoryDAO extends CrudRepository<Subcategory, Long> {
     List<Subcategory> findAll();
     Subcategory findByName(String name);
     Subcategory findByIdSubcategory(long id);
-    Subcategory findById(long id);
 }
