@@ -36,4 +36,7 @@ public class Subcategory implements Serializable {
     @OneToMany(mappedBy = "idSubcategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
+
+
+
 }
