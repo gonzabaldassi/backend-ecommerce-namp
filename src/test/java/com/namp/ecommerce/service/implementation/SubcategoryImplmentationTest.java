@@ -9,10 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import org.hibernate.mapping.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +30,7 @@ import com.namp.ecommerce.repository.ISubcategoryDAO;
 
 import java.util.*;
 
-public class SubCategoryImplmentationTest {
+public class SubcategoryImplmentationTest {
     
     @Mock
     private ISubcategoryDAO subcategoryDAO;
@@ -52,7 +50,7 @@ public class SubCategoryImplmentationTest {
     }
 
     @Test
-    void getSubcategories_Success() {
+    void getSubcategories() {
     
         // Creamos Subcategorias con listas inicializadas
         Category category1 = new Category(1L, "Bebidas Con Alcohol", "Descripción Bebidas con alcohol", new ArrayList<>());
@@ -110,7 +108,7 @@ public class SubCategoryImplmentationTest {
     }
 
     @Test
-    void getSubcategoriesWithProducts_Success() {
+    void getSubcategoriesWithProducts() {
         Category category1 = new Category(1L, "Bebidas Con Alcohol", "Descripción Bebidas con alcohol", new ArrayList<>());
         Subcategory subcategory1 = new Subcategory(1L, "Vinos", "Selección de Vinos", category1, new ArrayList<>());
         Product product1 = new Product(1L, "Toro Caja", "Vino TINTO CAJA TETRA", 1150, 300, "image1", subcategory1, new ArrayList<>());
@@ -167,7 +165,7 @@ public class SubCategoryImplmentationTest {
     }
 
     @Test
-    void getSubcategoriesIdWithProducts_Success() {
+    void getSubcategoriesIdWithProducts() {
         Category category1 = new Category(1L, "Bebidas Con Alcohol", "Descripcion Bebidas con alcohol", new ArrayList<>());
         Subcategory subcategory1 = new Subcategory(1L, "Vinos", "Seleccion de Vinos", category1, new ArrayList<>());
         Product product1 = new Product(1L, "Toro Caja", "Vino TINTO CAJA TETRA", 1150, 300, "image1", subcategory1, new ArrayList<>());
@@ -355,7 +353,7 @@ public class SubCategoryImplmentationTest {
     }
 
     @Test
-    void save_DuplicateName() {
+    void save_DuplicatedName() {
         // Simular categoría existente
         Category category1 = new Category(1L, "Bebidas Con Alcohol", "Descripción Bebidas con alcohol", new ArrayList<>());
         

@@ -79,7 +79,7 @@ public class ProductImplementationTest {
     }
     
     @Test
-    void getproducts_Success(){
+    void getProducts(){
         Category category1 = new Category(1L, "Bebidas Con Alcohol","Descriptioon Bebidas con alcohol", null);
         Subcategory subcategory1 = new Subcategory(1L, "Vinos", "Seleccion de Vinos", category1, null);
         Product product1= new Product(1L,"Vino Toro Caja","Description Vino Toro",1500.0,20,"Imagen",subcategory1,null);
@@ -321,8 +321,6 @@ public class ProductImplementationTest {
         verify(productDAO).findByIdProduct(1L);
         verify(mapperProduct).convertProductToDto(product); 
     }
-
-
 
 
 

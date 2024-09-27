@@ -43,7 +43,7 @@ public class SubcategoryController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Subcategory with ID "+id+" not found");
             }
-            return ResponseEntity.ok(subcategoryService.getSubcategoriesWithProducts());
+            return ResponseEntity.ok(subcategoryService.getSubcategoriesIdWithProducts(id));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error showing the subcategories:"+e.getMessage());
