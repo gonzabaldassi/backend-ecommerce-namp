@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.namp.ecommerce.model.Product;
 import com.namp.ecommerce.service.IProductService;
-
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -54,7 +52,13 @@ public class ProductController {
     }
 
     @PostMapping("product")
-    public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam("file") MultipartFile file){
+    public ResponseEntity<?> createProduct(@RequestParam("product") String productJson, @RequestParam(value="file", required = false) MultipartFile file){
+        // Verificar si el archivo es null o está vacío
+        //Este codigo lo pusimo para formatear el error y no crear un manejador global de excepciones, pero deberiamos cambiarlo.
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("La imagen es obligatoria.");
+        }
         try{
             ProductDTO createdProductDTO = productService.save(productJson, file);
 
