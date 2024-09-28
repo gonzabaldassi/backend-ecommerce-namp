@@ -104,6 +104,7 @@ public class ProductController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("The product does not exist");
             }
+
             ProductDTO updatedProductDTO = productService.update(existingProduct, productJson, file);
 
             if (updatedProductDTO == null){

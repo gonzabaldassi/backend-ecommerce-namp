@@ -2,6 +2,7 @@ package com.namp.ecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Subcategory implements Serializable {
     private long idSubcategory;
 
     @NotNull(message = "El nombre no puede estar vacio")
+    @Pattern(regexp = "^(?!\s*$)[a-zA-Z\s]+$",message = "El nombre debe contener solo caracteres alfabeticos")
     private String name;
 
     @NotNull(message = "La descripcion no puede estar vacia")

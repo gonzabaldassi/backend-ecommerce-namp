@@ -146,7 +146,7 @@ public class ProductImplementation implements IProductService{
         existingProduct.setPrice(productDTO.getPrice());
         existingProduct.setStock(productDTO.getStock());
         //Buscamos la instancia de subcategoria en base a la subcategoriaDTO que esta setteada en el productoDTO existente
-        existingProduct.setIdSubcategory(subcategoryDAO.findByIdSubcategory(existingProductDTO.getIdSubcategory().getIdSubcategory()));
+        existingProduct.setIdSubcategory(subcategoryDAO.findByIdSubcategory(productDTO.getIdSubcategory().getIdSubcategory()));
 
         //Hago la verificacion de imagen
         if (file != null && !file.isEmpty()){
