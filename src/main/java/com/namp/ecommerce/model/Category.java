@@ -35,5 +35,4 @@ public class Category implements Serializable {
     @OneToMany(mappedBy = "idCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subcategory> subcategories = new ArrayList<>();
 
-
 }

@@ -42,6 +42,13 @@ public class ProductImplementation implements IProductService{
     @Value("${image.upload.dir}")
     private String uploadDir;
 
+    private boolean skipFileDeletion = false;
+
+    public void setSkipFileDeletion(boolean skipFileDeletion) {
+        this.skipFileDeletion = skipFileDeletion;
+    }
+
+
     @Override
     public List<ProductDTO> getProducts() {
         return productDAO.findAll()
@@ -90,8 +97,6 @@ public class ProductImplementation implements IProductService{
 
             String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
 
-            // Path donde se guardan las imagenes
-            // String uploadDir = "/home/agustin06/IdeaProjects/images";
 
             // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
             filePath = Paths.get(uploadDir, fileName);
@@ -99,15 +104,13 @@ public class ProductImplementation implements IProductService{
 
             // Seteo ruta al atributo img de product
             productDTO.setImg("/images/" + fileName);
+
         }
         // Normalizar los espacios en blanco y convertir a mayúsculas
         String normalizedName = productDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
-
         if(!verifyName(normalizedName)) {
             productDTO.setName(normalizedName);
-
             Product product = mapperProduct.convertDtoToProduct(productDTO);
-
             Product savedProduct = productDAO.save(product);
 
             // Guardo la imagen (si un archivo se llama igual en el path lo va a reemplazar)
@@ -116,29 +119,29 @@ public class ProductImplementation implements IProductService{
 
             return mapperProduct.convertProductToDto(savedProduct);
         }
+
         return null;
     }
 
-    @Override
-    public ProductDTO update(ProductDTO existingProductDTO, String productJson, MultipartFile file) throws IOException{
-        Path filePath = null;
+        @Override
+        public ProductDTO update(ProductDTO existingProductDTO, String productJson, MultipartFile file) throws IOException{
+            Path filePath = null;
 
-        Product existingProduct = productDAO.findByIdProduct(existingProductDTO.getIdProduct());
-        if (existingProduct == null){
-            return null;
-        }
+            Product existingProduct = productDAO.findByIdProduct(existingProductDTO.getIdProduct());
+            if (existingProduct == null){
+                return null;
+            }
 
-        // Convierto json a objeto
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProductDTO productDTO = objectMapper.readValue(productJson, ProductDTO.class);
+            // Convierto json a objeto
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProductDTO productDTO = objectMapper.readValue(productJson, ProductDTO.class);
+            // Normalizar los espacios en blanco y convertir a mayúsculas
+            String normalizedName = productDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
 
-        // Normalizar los espacios en blanco y convertir a mayúsculas
-        String normalizedName = productDTO.getName().replaceAll("\\s+", " ").trim().toUpperCase();
-
-        //Verifica que el nombre esta disponible
-        if(verifyName(normalizedName, existingProductDTO.getIdProduct())) {
-            return null; //Si el nombre ya esta siendo utilizado
-        }
+            //Verifica que el nombre esta disponible
+            if(verifyName(normalizedName, existingProductDTO.getIdProduct())) {
+                return null; //Si el nombre ya esta siendo utilizado
+            }
 
         //Actualizar los campos en la entidad existente
         existingProduct.setName(normalizedName);
@@ -148,35 +151,35 @@ public class ProductImplementation implements IProductService{
         //Buscamos la instancia de subcategoria en base a la subcategoriaDTO que esta setteada en el productoDTO existente
         existingProduct.setIdSubcategory(subcategoryDAO.findByIdSubcategory(productDTO.getIdSubcategory().getIdSubcategory()));
 
-        //Hago la verificacion de imagen
-        if (file != null && !file.isEmpty()){
+            //Hago la verificacion de imagen
+            if (file != null && !file.isEmpty()){
 
-            String contentType = file.getContentType();
+                String contentType = file.getContentType();
 
-            // Corroboro que el tipo de contenido sea una imagen
-            if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
-                throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
+                // Corroboro que el tipo de contenido sea una imagen
+                if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")){
+                    throw new InvalidFileFormatException("El formato del archivo no es válido. Solo se permiten archivos JPG o PNG.");
+                }
+
+                // Genero un nombre custom para la imagen usando el nombre del producto y un UUID
+                String fileExtension = contentType.equals("image/jpeg") ? ".jpg" : ".png";
+                String formattedDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
+
+                // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
+                filePath = Paths.get(uploadDir, fileName);
+
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                existingProduct.setImg("/images/" + fileName);
             }
 
-            // Genero un nombre custom para la imagen usando el nombre del producto y un UUID
-            String fileExtension = contentType.equals("image/jpeg") ? ".jpg" : ".png";
-            String formattedDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileName = productDTO.getName().replaceAll("\\s+", "_").trim() + "_" + formattedDate + fileExtension;
+            //Guardamos el producto actualizado
+            Product updatedProduct = productDAO.save(existingProduct);
 
-            // Crea la ruta del archivo, si esta creada actualiza, de lo contrario crea
-            filePath = Paths.get(uploadDir, fileName);
-
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            existingProduct.setImg("/images/" + fileName);
+            //Devolvemos el DTO del producto actualizado
+            return mapperProduct.convertProductToDto(updatedProduct);
         }
-
-        //Guardamos el producto actualizado
-        Product updatedProduct = productDAO.save(existingProduct);
-
-        //Devolvemos el DTO del producto actualizado
-        return mapperProduct.convertProductToDto(updatedProduct);
-    }
 
     @Override
     public void delete(ProductDTO productDTO){
@@ -184,15 +187,17 @@ public class ProductImplementation implements IProductService{
         if (product == null){
             throw new EntityNotFoundException("Product not found with ID: " + productDTO.getIdProduct());
         }
-        String imgPathDto = productDTO.getImg().replace("/images","");
-        //Eliminar la imagen asociada con ese producto
-        String imgPath = uploadDir + imgPathDto;
-        // Creo el objeto Path para el archivo de la imagen
-        Path filePath = Paths.get(imgPath);
-        try {
-            Files.delete(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(product.getName(), e);
+        if (!skipFileDeletion) {
+            String imgPathDto = productDTO.getImg().replace("/images","");
+            //Eliminar la imagen asociada con ese producto
+            String imgPath = uploadDir + imgPathDto;
+            // Creo el objeto Path para el archivo de la imagen
+            Path filePath = Paths.get(imgPath);
+            try {
+                Files.delete(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException(product.getName(), e);
+            }
         }
 
         // Luego elimino el objeto producto de la base de datos
