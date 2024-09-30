@@ -27,7 +27,7 @@ public class Product implements Serializable{
     private long idProduct;
 
     @NotNull(message = "El nombre no debe estar vacio")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "El nombre solo puede contener caracteres alfanuméricos")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "El nombre solo puede contener caracteres alfanuméricos")
     private String name;
 
     @NotNull(message = "La descripcion no debe estar vacio")
