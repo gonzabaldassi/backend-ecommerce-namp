@@ -33,3 +33,6 @@ build/
 
 application.properties
 
+/src/main/resources/images/fernet.jpg
+/src/main/resources/images/gancia.png
+/src/main/resources/images/perro.jpg
